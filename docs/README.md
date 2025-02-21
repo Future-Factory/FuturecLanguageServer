@@ -10,3 +10,5 @@ Zusätzlich ist die typische Datenbankstruktur der Warenwirtschaftdatenbank inkl
 [Future-C standard library](future-c-functions.md)
 
 [Datenbankstruktur](datenbankstruktur.md)
+
+[Code examples](snippets.md)
