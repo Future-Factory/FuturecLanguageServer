@@ -1,0 +1,2153 @@
+
+Tabelle: Einheit (Tabellennummer = 58)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Bezeichnung	STRING	
+6: Kürzel	STRING	
+7: Kommastellen	Integer	
+8: Fremdsprachige Texte	BLOB	
+9: Fremdsprachige Kürzel	BLOB	
+10: Preiseinheit	double	
+13: UN/CEFACT-Rec20	STRING	
+
+Tabelle: Artikel (Tabellennummer = 90)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikelnr._5	STRING	
+6: Bezeichnung	STRING	
+7: Kurzbezeichnung	STRING	
+8: EAN-Code	STRING	
+9: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+10: Hersteller-Nr.	STRING	
+11: Zolltarif-Nr.	STRING	
+12: Hauptartikel mit Auspr.	BOOL	
+13: Subart. übern. VK-Preise	BOOL	
+14: Subart. übern. EK-Preise	BOOL	
+15: Subart. übern. Stücklisten	BOOL	
+16: Hauptartikel	INT	FOREIGN KEY REFERENCES Artikel
+17: Farbe	INT	FOREIGN KEY REFERENCES Farbe
+18: Größe	INT	FOREIGN KEY REFERENCES Größe
+19: Lagerort	STRING	
+20: Lieferzeit	STRING	
+21: Größenraster	INT	FOREIGN KEY REFERENCES Größenraster
+22: Verkaufstyp	INT	FOREIGN KEY REFERENCES Verkaufstyp
+23: Lagertyp	INT	FOREIGN KEY REFERENCES Lagertyp
+24: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+25: Nummernkreis Serie/Charge	INT	FOREIGN KEY REFERENCES NumberCounter
+26: Hersteller	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft1
+27: Material	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+28: Eigenschaft 3	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft3
+29: Eigenschaft 4	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft4
+30: Seriennummernartikel	BOOL	
+31: Chargenartikel	BOOL	
+32: Kundenzuordnung	INT	FOREIGN KEY REFERENCES Kunde
+33: Beschreibung	STRING	
+34: Beschreibung2	STRING	
+35: Einheit Verkauf	INT	FOREIGN KEY REFERENCES Einheit
+36: Verpackung	INT	FOREIGN KEY REFERENCES Verpackung
+37: Mindestmenge VK	double	
+38: Packungsgr.	double	
+39: Gewicht kg	double	
+40: Anzahl / Palette	double	
+41: Volumen m3	double	
+42: Haltbarkeit Tage	Integer	
+43: Garantiezeit Monate	Integer	
+44: Serviceabstand Monate	Integer	
+45: Lieferzeit Tage	Integer	
+46: Alternativartikel	INT	FOREIGN KEY REFERENCES Artikel
+47: Intrastat Ursprungsland	STRING	
+48: Intrastat Ursprungsregion	STRING	
+49: Text 1	STRING	
+50: Text 2	STRING	
+51: Preiseinheit	Integer	
+52: Ursprungsland	INT	FOREIGN KEY REFERENCES Land
+53: Bestandskonto	INT	FOREIGN KEY REFERENCES Konto Fibu
+54: Erlöskonto Inland	Integer	
+55: Erlöskonto EU	Integer	
+56: Erlöskonto Drittland	Integer	
+57: Aufwandskonto Inland	Integer	
+58: Aufwandskonto EU	Integer	
+59: Aufwandskonto Drittland	Integer	
+60: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+61: Bemerkung	STRING	
+62: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+63: Gesamtsteuersatz	double	
+64: Punktewert	double	
+65: Provis.stufe	INT	FOREIGN KEY REFERENCES Provisionsstufe
+66: Rabatt max. %	double	
+67: POS Preistyp	Integer	
+68: EK Menge nicht umrechnen	Integer	
+69: Preis Brutto	MONEY	
+70: Preis Netto	MONEY	
+71: Standard DB	MONEY	
+72: Standard DB %	double	
+73: Preise Verkauf	BLOB	
+74: Lager	STRING	
+75: POS Warntext	STRING	
+76: Max Bestellmenge Webshop	double	
+78: Min.Halt. Ein(Tage)	double	
+79: Min.Halt. Aus(Tage)	double	
+80: Packungsgröße EK	double	
+82: Bestellmenge	double	
+83: Auftragsbezogene Bestellung	BOOL	
+84: Kalkulationsfaktor	double	
+85: Arbeitszeit (std.)	DATETIME	
+86: Arbeitspreis	MONEY	
+87: Stundensatz 2	MONEY	
+88: Kostenart	INT	FOREIGN KEY REFERENCES Kostenart
+89: Lagerdaten	STRING	
+90: Vorg. VK-Preis	MONEY	
+91: Standardlieferant	INT	FOREIGN KEY REFERENCES Lieferant
+92: Lieferantenauswahl	Integer	
+93: Preise Einkauf	BLOB	
+94: Stückliste	INT	FOREIGN KEY REFERENCES Stückliste
+95: Setliste	BLOB	
+96: Varianten	BLOB	
+97: Prozess	BLOB	
+98: ARA-Eigen	MONEY	
+99: ARA-Stückliste	MONEY	
+100: ARA-Verpackung	MONEY	
+101: ARA-Gesamt	MONEY	
+102: ARA-Material	INT	FOREIGN KEY REFERENCES Material
+103: Kalk. EK-Preis / Stk.	MONEY	
+104: Bezugskosten	MONEY	
+105: Kosten Material	MONEY	
+106: Einstandspreis (->DB1)	MONEY	
+107: Kosten Arbeit	MONEY	
+108: Kosten Ressourcen	MONEY	
+109: Sonstige Kosten	MONEY	
+110: Gesamtkosten/Stk.(->DB2)	MONEY	
+111: Budget	INT	FOREIGN KEY REFERENCES Budget
+112: Statistikdaten	INT	FOREIGN KEY REFERENCES Statistikdaten Artikel
+113: Länge cm	double	
+114: Breite cm	double	
+115: Höhe cm	double	
+116: Rüstkosten / Auftrag	MONEY	
+121: Gewicht Verpack.	double	
+126: Gemeinkostenanteil	double	
+128: Bilder	STRING	
+129: Dokumente	STRING	
+130: Zusatzinformationen	BLOB	
+131: Nicht auf Webshop hochladen	BOOL	
+132: Rabattsperre	BOOL	
+133: Bearbeitung gesperrt	BOOL	
+134: beigestellt	BOOL	
+135: ARA-Materialliste	INT	FOREIGN KEY REFERENCES ARA-Materialliste
+136: Farbraster	INT	FOREIGN KEY REFERENCES Farbraster
+137: Alternativbezeichnungen	BLOB	
+138: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+139: Ergänzungsartikel	STRING	
+140: Farbe	Integer	
+141: Mindest DB %	double	
+142: Gewicht Netto	double	
+143: Mindestbestand	double	
+144: Gebühr1	MONEY	
+145: Gebühr2	MONEY	
+147: Bezugsmenge Stückliste	Integer	
+148: Lieferzeit in Tagen	Integer	
+150: Arbeitszeit Fix	double	
+151: Arbeitszeit Variabel	double	
+152: Max. Bestellmenge	double	
+156: GUID	STRING	
+157: Titel Metadata	STRING	
+158: Beschreibung Metadata	STRING	
+159: Keywords Metadata	STRING	
+160: Kurzbeschreibung Webshop	STRING	
+165: Produktionsmenge	double	
+166: NEM	double	
+167: Verpackung2	INT	FOREIGN KEY REFERENCES Verpackung
+168: Gewicht Verpack.2	double	
+171: Verhältnis in Produktion	double	
+173: Zusatztext Artikeltext Ausdruck	STRING	
+174: Artikel immer Brutto rechnen	BOOL	
+175: Zusatztext aus der Gruppe nicht übernehmen	BOOL	
+186: Kapazität	double	
+211: Zusatzprovisionen	BLOB	
+212: Prozess-Ereignisse	STRING	
+213: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+214: Preisimport VK	DATETIME	
+215: Preisimport EK	DATETIME	
+216: Differenzbesteuert	BOOL	
+218: GMP Klasse	INT	FOREIGN KEY REFERENCES Lieferant Eigenschaft1
+219: Notwendige Dokumente	STRING	
+220: Lagerung Quarantäne	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+221: Lagerung nach Freigabe	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+222: Datum Freigabe	DATETIME	
+223: Mitarbeiter Freigabe	INT	FOREIGN KEY REFERENCES Mitarbeiter
+224: Haltbar nach Öffnen	STRING	
+225: Proben erzeugen bei Anlieferung	BOOL	
+226: Gutscheinartikel	BOOL	
+227: Mindestmengenzuschlag	MONEY	
+228: Mindestmenge	double	
+229: Einnahmenart	INT	FOREIGN KEY REFERENCES Einnahmenart
+230: Bezugskosten-%	double	
+234: Packungsgröße2	double	
+235: Packungsgröße3	double	
+251: Kostenträger	INT	FOREIGN KEY REFERENCES Kostenträger KORE
+252: Menge/Einheit	double	
+253: Einheitspreis - Einheit	INT	FOREIGN KEY REFERENCES Einheit
+254: Einheitspreis	MONEY	
+255: EK-Kommissionsartikel	BOOL	
+256: LinkTable Land	STRING	
+257: LinkTable Kunde	STRING	
+258: Setartikel für Lieferschein aufteilen	BOOL	
+259: Top-Artikel	Integer	
+264: Umverpackung	INT	FOREIGN KEY REFERENCES Verpackung
+265: Menge Umverpack.	double	
+266: Verfüger	INT	FOREIGN KEY REFERENCES Mitarbeiter
+272: Auf Stellplatz lagern	BOOL	
+273: Abweichender Steuersatz	BLOB	
+274: Produktion Freigabe Notwendig	BOOL	
+275: Nebenleistung	BOOL	
+276: Standardlager	INT	FOREIGN KEY REFERENCES Lager
+277: Projektordnerpfad	STRING	
+278: Ins negative buchen zulassen	BOOL	
+279: GTIN	STRING	
+280: Grossbrief	BOOL	
+285: Manufakturkosten	MONEY	
+287: Statistik Tätigkeiten	BLOB	
+292: Präferenzberechtigt	BOOL	
+293: Kundenkategorie	INT	FOREIGN KEY REFERENCES Kundenkategorie
+294: Fixpreis	BOOL	
+295: Produktionsnr.	STRING	
+296: Versionsnummer	Integer	
+297: Einkaufsbemerkung	STRING	
+298: Produktionsanleitung	STRING	
+299: Standardlager Eingang	INT	FOREIGN KEY REFERENCES Lager
+300: Standardlager Ausgang	INT	FOREIGN KEY REFERENCES Lager
+301: VK-Preise aus Subartikel verwenden	BOOL	
+302: EK-Preise aus Subartikel verwenden	BOOL	
+303: Zolltarif-Nr. 2	STRING	
+304: Umrechnungsfaktor EK	double	
+305: Umrechnungsfaktor VK	double	
+306: Einheit Einkauf	INT	FOREIGN KEY REFERENCES Einheit
+307: Einheit Lager	INT	FOREIGN KEY REFERENCES Einheit
+308: Stücklistenhierarchie	BLOB	
+
+Tabelle: Verkaufstyp (Tabellennummer = 91)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Bezeichnung	STRING	
+6: Kürzel	STRING	
+
+Tabelle: Lagertyp (Tabellennummer = 92)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Bezeichnung	STRING	
+6: Kürzel	STRING	
+7: Farbe	Integer	
+
+Tabelle: Artikelgruppe (Tabellennummer = 93)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Bezeichnung	STRING	
+6: Kürzel	STRING	
+7: Untergruppe von	INT	FOREIGN KEY REFERENCES Artikelgruppe
+8: Verkaufstyp	INT	FOREIGN KEY REFERENCES Verkaufstyp
+9: Lagertyp	INT	FOREIGN KEY REFERENCES Lagertyp
+10: Einheit	INT	FOREIGN KEY REFERENCES Einheit
+11: Bestandskonto	INT	FOREIGN KEY REFERENCES Konto Fibu
+12: Abw. Erlöskonto	INT	FOREIGN KEY REFERENCES Konto Fibu
+13: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+14: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+15: Fremdsprachige Texte	BLOB	
+16: Provisionsstufe	INT	FOREIGN KEY REFERENCES Provisionsstufe
+17: Mindest DB %	double	
+18: Bezugskosten	MONEY	
+19: Sonstige Kosten	MONEY	
+20: Prozess	BLOB	
+21: Bezeichnungen Link-Eigenschaften	STRING	
+22: Bezeichnungen Text-Eigenschaften	STRING	
+23: Farbe	Integer	
+24: Bilder	STRING	
+25: Gemeinkostenanteil	double	
+26: Preiseinheit	double	
+27: Arbeitszeit eingeben	BOOL	
+28: Nicht auf Webshop hochladen	BOOL	
+30: Webshop-ID	Integer	
+38: Nicht für Kundenkarte berücksichtigen	Integer	
+40: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+41: Kostenart	INT	FOREIGN KEY REFERENCES Kostenart
+42: Erlöskonto Inland	Integer	
+43: Erlöskonto EU	Integer	
+44: Erlöskonto Drittland	Integer	
+45: Aufwandskonto Inland	Integer	
+46: Aufwandskonto EU	Integer	
+47: Aufwandskonto Drittland	Integer	
+48: Zusatztext Artikelgruppentext Ausdruck	STRING	
+50: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+59: Einnahmenart	INT	FOREIGN KEY REFERENCES Einnahmenart
+60: GUID	STRING	
+67: Nicht in POS anzeigen	BOOL	
+
+Tabelle: Artikel Eigenschaft2 (Tabellennummer = 95)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Bezeichnung	STRING	
+6: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+8: Zuschlag Variante	MONEY	
+16: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+22: Spezifisches Gewicht kg/dm3	double	
+49: Schnittgeschwindigkeiten	BLOB	
+
+Tabelle: Lagerdaten Artikel (Tabellennummer = 104)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+7: Lagergruppe	Integer	
+11: Lager	INT	FOREIGN KEY REFERENCES Lager
+12: Standort	STRING	
+13: Lagerstand	double	
+14: Vorbestellungen	double	
+15: Nachbestellungen	double	
+16: Verfügbare Menge	double	
+17: Soll Bestand	double	
+18: Mindestbestand	double	
+19: Bestellmenge	double	
+22: Lagergewicht	double	
+23: Maximale Menge	double	
+26: Einzelwert	MONEY	
+27: Gesamtwert	MONEY	
+28: Gewichtswert Einzel	MONEY	
+29: Gewichtswert Gesamt	MONEY	
+33: GUID	STRING	
+
+Tabelle: Lagerbewegung (Tabellennummer = 105)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Bewegungsart	INT	FOREIGN KEY REFERENCES Lagerbewegungstyp
+7: Datum	DATETIME	
+8: Menge	double	
+9: Einzelwert	MONEY	
+10: Gesamtwert	MONEY	
+11: Lager Ein	INT	FOREIGN KEY REFERENCES Lager
+12: Lager Aus	INT	FOREIGN KEY REFERENCES Lager
+13: Charge/Seriennummer	INT	FOREIGN KEY REFERENCES 
+14: Gewicht	Integer	
+15: Stellplatz Ein	STRING	
+16: Stellplatz Aus	STRING	
+17: Gew.Einzelwert	MONEY	
+18: Gew.Gesamtwert	MONEY	
+19: Bemerkung_19	STRING	
+20: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+21: Variante 1	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft1
+22: Variante 2	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+23: Parameter	double	
+27: Tabelle	Integer	
+28: Datensatz	Integer	
+29: Exportiert	BOOL	
+30: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+31: Export AutoNumber	Integer	
+32: GUID	STRING	
+
+Tabelle: Lagerbewegungstyp (Tabellennummer = 106)
+Spalten:
+1: id	Integer	PRIMARY KEY
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+2: active	BOOL	
+5: Bezeichnung	STRING	
+
+Tabelle: Inventurliste (Tabellennummer = 107)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Datum Beginn	DATETIME	
+6: Datum Ende	DATETIME	
+7: Gesamtwert Soll	MONEY	
+8: Gesamtwert Ist	MONEY	
+9: Gesamtwert Differenz	MONEY	
+10: Artikeldaten geändert	BOOL	
+11: FIBU gebucht	BOOL	
+12: Lager gebucht	BOOL	
+13: Stellplätze buchen	BOOL	
+15: Beendet	BOOL	
+16: Lager	INT	FOREIGN KEY REFERENCES Lager
+17: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+21: Differenz	MONEY	
+25: Artikelliste	BLOB	
+27: Buchungsbemerkung	STRING	
+
+Tabelle: Lager (Tabellennummer = 108)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Bezeichnung	STRING	
+6: Adresse	STRING	
+7: PLZ	STRING	
+8: Ort/Land	STRING	
+9: Land	INT	FOREIGN KEY REFERENCES Land
+10: Tel	STRING	
+11: Fax	STRING	
+12: E-Mail	STRING	
+13: Verantwortung	INT	FOREIGN KEY REFERENCES Mitarbeiter
+14: Kürzel	STRING	
+22: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+23: Gruppe	Integer	
+24: Kapazität	Integer	
+25: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+35: Preisliste	INT	FOREIGN KEY REFERENCES Preisliste
+37: LinkTable Mietvertragskategorie	STRING	
+38: Konto Export	Integer	
+39: Artikel ins negative buchen lassen	BOOL	
+40: GUID	STRING	
+
+Tabelle: Stellplatz (Tabellennummer = 111)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Bezeichnung_5	STRING	
+6: Lager	INT	FOREIGN KEY REFERENCES Lager
+7: Halle	Integer	
+8: Regal	Integer	
+9: X-Position	double	
+10: Y-Position	double	
+11: Breite	double	
+12: Manipulationsaufwand	Integer	
+13: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+14: Breite m	double	
+15: Tiefe m	double	
+16: Höhe m	double	
+17: Volumen m3	double	
+18: Platz für Paletten	double	
+19: Fach	Integer	
+20: Höhe	Integer	
+22: Füllungsgrad	double	
+24: Bemerkung	STRING	
+29: Gekühlt	BOOL	
+34: Menge Artikel	double	
+35: Höhe	double	
+36: Koordinate5	double	
+37: Koordinate6	double	
+38: Koordinate7	double	
+39: Koordinate8	double	
+40: Barcode	STRING	
+41: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+42: Mehrere Artikel mischbar	BOOL	
+43: Min. Länge	double	
+44: Min. Breite	double	
+45: Max. Länge	double	
+46: Max. Breite	double	
+47: Material	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+
+Tabelle: Charge_SerienNr auf Lager (Tabellennummer = 113)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Charge/Seriennummer	STRING	
+7: Lager	INT	FOREIGN KEY REFERENCES Lager
+8: Menge	double	
+9: Haltbar bis	DATETIME	
+10: Vorreservierte Menge	Integer	
+11: Verfügbar	Integer	
+12: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+13: Lieferdatum	DATETIME	
+14: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+15: update	Integer	
+16: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+19: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+20: Einzelwert	MONEY	
+21: Lagerort	STRING	
+31: Material	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+43: Zertifikat vorhanden	Integer	
+44: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+45: Länge	double	
+46: Breite	double	
+47: Höhe	double	
+48: Gewicht	double	
+49: Reserviert für Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+50: Reserviert für Produktion	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+51: Reserviert für Ressourcenbelegung	INT	FOREIGN KEY REFERENCES Ressourcenbelegung
+52: Ursprungscharge	INT	FOREIGN KEY REFERENCES Charge_SerienNr auf Lager
+53: Virtuell-Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+54: Virtuell-Ressourcenbelegung	INT	FOREIGN KEY REFERENCES Ressourcenbelegung
+55: Gelöscht Datum	DATETIME	
+56: Gelöscht Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+57: Gelöscht Lieferschein	INT	FOREIGN KEY REFERENCES Lieferung
+58: Ursprungscharge gelöscht	INT	FOREIGN KEY REFERENCES charge gelöscht
+59: gelöscht	BOOL	
+
+Tabelle: Artikel auf Stellplatz (Tabellennummer = 114)
+Spalten:
+1: id	Integer	PRIMARY KEY
+4: changed_on	DATETIME	
+3: creation	DATETIME	
+2: active	BOOL	
+5: Stellplatz	INT	FOREIGN KEY REFERENCES Stellplatz
+6: Lager	INT	FOREIGN KEY REFERENCES Lager
+7: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+8: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+9: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+10: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+11: Arbeitspaket	INT	FOREIGN KEY REFERENCES Arbeitspaket
+13: Menge	double	
+14: Volumen	double	
+21: Bemerkung	STRING	
+22: Charge/Seriennummer	STRING	
+
+Tabelle: Chargenbewegung (Tabellennummer = 148)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Datum	DATETIME	
+6: Seriennummer	STRING	
+7: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+8: Menge	double	
+9: Bewegungsart	INT	FOREIGN KEY REFERENCES Lagerbewegungstyp
+10: Anlieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+11: Auslieferung	INT	FOREIGN KEY REFERENCES Lieferung
+12: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+13: Inventur	INT	FOREIGN KEY REFERENCES Inventurliste
+14: Bemerkung	STRING	
+15: Lager Ein	INT	FOREIGN KEY REFERENCES Lager
+16: Lager Aus	INT	FOREIGN KEY REFERENCES Lager
+17: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+19: Produktionsartikel	INT	FOREIGN KEY REFERENCES Artikel
+22: Lagerort	STRING	
+
+Tabelle: Lieferung (Tabellennummer = 154)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Nummer	STRING	
+6: Datum	DATETIME	
+7: Lieferdatum	DATETIME	
+8: Kategorie	INT	FOREIGN KEY REFERENCES Auftragskategorie
+9: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+10: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+11: Projektname	STRING	
+12: Priorität	Integer	
+13: Lager Ausgang	INT	FOREIGN KEY REFERENCES Lager
+14: Vertrag	INT	FOREIGN KEY REFERENCES Rahmenvertrag Verkauf
+15: Name	STRING	
+16: z.Hd.	STRING	
+17: Erster Artikel	STRING	
+18: Titel	STRING	
+19: Vorname	STRING	
+20: UID-Nummer	STRING	
+21: Straße	STRING	
+22: PLZ	STRING	
+23: Ort	STRING	
+24: Land	INT	FOREIGN KEY REFERENCES Land
+25: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+26: Landspez.	Integer	
+27: Empfänger	INT	FOREIGN KEY REFERENCES Kunde
+28: Name	STRING	
+29: Adresse	STRING	
+30: PLZ	STRING	
+31: Ort	STRING	
+32: Land Rechnung	INT	FOREIGN KEY REFERENCES Land
+33: Land Lieferung	INT	FOREIGN KEY REFERENCES Land
+34: Name	STRING	
+35: Adresse	STRING	
+36: PLZ	STRING	
+37: Ort	STRING	
+38: Lieferbemerkung	STRING	
+39: Paketnummer	STRING	
+40: Währung	INT	FOREIGN KEY REFERENCES Währung
+41: Bearbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+42: Tour	INT	FOREIGN KEY REFERENCES Tour
+43: Zusteller	INT	FOREIGN KEY REFERENCES Mitarbeiter
+44: Bestellnr	STRING	
+45: Datum Kunde	DATETIME	
+46: Kasse	INT	FOREIGN KEY REFERENCES Kasse
+47: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+48: Bemerkung	STRING	
+49: Angebot	INT	FOREIGN KEY REFERENCES Angebot
+50: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+51: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung
+52: Rechnung	INT	FOREIGN KEY REFERENCES Rechnung
+53: Leistung von	DATETIME	
+54: Leistung bis	DATETIME	
+55: Buchungstabelle	Integer	
+56: Buchungsdatensatz FIBU	Integer	
+57: Buchungsdatensatz EA	Integer	
+58: OP-Datensatz	Integer	
+59: Preisliste	INT	FOREIGN KEY REFERENCES Preisliste
+60: Zahlungsart	INT	FOREIGN KEY REFERENCES Zahlungsart
+61: Zahlungsziel	INT	FOREIGN KEY REFERENCES Kondition
+62: Versandart	INT	FOREIGN KEY REFERENCES Versandart
+63: Lieferung frei ab	MONEY	
+64: Lieferkosten Netto	MONEY	
+65: Lieferkosten Ust %	double	
+66: Lieferkosten Brutto	MONEY	
+67: Lieferfrist Tage	Integer	
+68: Rabatt	double	
+69: Max. Retourmenge	double	
+70: Incoterms	INT	FOREIGN KEY REFERENCES Incoterms
+72: Transportart	INT	FOREIGN KEY REFERENCES Transportart
+73: Spedition	INT	FOREIGN KEY REFERENCES Spedition
+74: Kostenträger	INT	FOREIGN KEY REFERENCES Kostenträger KORE
+75: Art des Geschäfts (Intrastat)	INT	FOREIGN KEY REFERENCES Intrastat Geschäftsart
+76: Verkehrszweig (Intrastat)	INT	FOREIGN KEY REFERENCES Intrastat Verkehrszweig
+77: Stat. Verfahren (Intrastat)	INT	FOREIGN KEY REFERENCES Intrastat Stat_ Verfahren
+78: Sprache	INT	FOREIGN KEY REFERENCES Sprache
+79: Ust-befreit	Integer	
+80: Incoterms Ort	STRING	
+81: Aufträge Sammellieferschein	STRING	
+82: Positionen	STRING	
+83: Positionssumme Netto	MONEY	
+84: Positionssumme Ust.	MONEY	
+85: Positionssumme Steuer1	MONEY	
+86: Positionssumme Steuer2	MONEY	
+87: Positionssumme Brutto	MONEY	
+88: Verrechn. Betr. Netto	MONEY	
+89: Verrechn. Betr. Ust	MONEY	
+90: Verrechn. Betr. Steuer1	MONEY	
+91: Verrechn. Betr. Steuer1	MONEY	
+92: Verrechn. Betr. Brutto	MONEY	
+93: Summe Netto	MONEY	
+94: Summe Ust.	MONEY	
+95: Summe Steuer1	MONEY	
+96: Summe Steuer2	MONEY	
+97: Summe Brutto	MONEY	
+98: Externe Kosten Netto	MONEY	
+99: Externe Kosten Ust	MONEY	
+100: Externe Kosten Brutto	MONEY	
+101: Tausenderpreis	MONEY	
+102: Kopftext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+103: Kopftext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+104: Kopftext 3	STRING	
+105: Fußtext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+106: Fußtext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+107: Fußtext 3	STRING	
+109: Ansprechpartner Spedition	STRING	
+110: Einstandspreis	MONEY	
+111: Gesamtkosten	MONEY	
+112: DB 1	MONEY	
+113: DB 2	MONEY	
+114: Anteil DB 1	double	
+115: Anteil DB 2	double	
+116: Summenrabatt	MONEY	
+117: Gewicht kg	double	
+118: Anzahl Pakete	double	
+119: Wert Bestellmenge	MONEY	
+120: Maschinenkosten	MONEY	
+121: Porto	MONEY	
+122: Anteil Retourmenge	double	
+123: ARA-Summe	MONEY	
+124: Arbeitskosten Netto	MONEY	
+126: Gesamt NEM	double	
+128: Vermittler_128	INT	FOREIGN KEY REFERENCES Kunde
+129: Fixprovision	MONEY	
+130: Provisionsfaktor	double	
+131: Provisionssumme	MONEY	
+132: Provisionsdatensatz	INT	FOREIGN KEY REFERENCES Vermittler-Provisionen
+133: Provisionsdatensatz2	INT	FOREIGN KEY REFERENCES Vermittler-Provisionen
+134: Leistungsdauer	Integer	
+135: Palettenaufteilung	BLOB	
+136: Lager Eingang	INT	FOREIGN KEY REFERENCES Lager
+137: Dokumente	STRING	
+138: Zusatzinformationen	BLOB	
+139: Summe Arbeitsdauer	DATETIME	
+140: Arbeitskosten Ist	MONEY	
+141: Verrechnungskosten	MONEY	
+143: Prozeß-Ereignisse	STRING	
+144: Summe Ressourcenkosten	MONEY	
+145: Summe Mitarbeiterkosten	MONEY	
+146: Summe Gesamtkosten	MONEY	
+147: Betrag bezahlt	MONEY	
+149: Stornierungsgrund	INT	FOREIGN KEY REFERENCES Stornierungsgrund
+150: Mahnstufe	INT	FOREIGN KEY REFERENCES Mahnstufe
+151: gesperrt	BOOL	
+152: Prozess gestartet	BOOL	
+153: Nicht verrechnen	BOOL	
+154: gebucht	BOOL	
+155: Beleg erledigt	BOOL	
+156: bezahlt	BOOL	
+157: freigegeben	BOOL	
+158: Preise fixiert	BOOL	
+159: Mietvertrag	INT	FOREIGN KEY REFERENCES Mietvertrag
+163: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+167: Mahngebühr	MONEY	
+169: Provisionswert Artikel	MONEY	
+171: Ende Vertrag	DATETIME	
+172: Fälligkeit	DATETIME	
+174: Arbeitszeit verrechnen	BOOL	
+175: gebucht Eingang	BOOL	
+176: gebucht Ausgang	BOOL	
+179: gedruckt	BOOL	
+181: Scan OK	BOOL	
+182: Haftrücklass	double	
+183: Haftrücklass Betrag	MONEY	
+184: Haftrücklass Bezahlt	MONEY	
+185: Haftrücklass Offen	MONEY	
+186: Deckungsrücklass	double	
+187: Deckungsrücklass Betrag	MONEY	
+188: Deckungsrücklass Bezahlt	MONEY	
+189: Betrag verrechnet	MONEY	
+192: Rückgabe	BOOL	
+193: GUID	STRING	
+194: Webshop Rechnungs ID	Integer	
+216: Letzte Verrechnung	DATETIME	
+217: Nächste Verrechnung	DATETIME	
+218: Verrechnungsfrequenz Tage	Integer	
+219: Ansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+234: per Mail gesendet	BOOL	
+237: Beleg immer BRUTTO rechnen	BOOL	
+238: Beleg immer NETTO rechnen	BOOL	
+241: Letzte Mahnung durchgeführt	DATETIME	
+242: Ansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+245: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+247: Volumen m3	double	
+248: Feingewicht	double	
+249: Raugewicht	double	
+250: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+251: UPS-Tracking	BOOL	
+252: Postliste	INT	FOREIGN KEY REFERENCES Postliste
+254: UPS-ShipmentIDNumber	STRING	
+255: UPS-TrackingNumber	STRING	
+256: UPS-Tracking Info	STRING	
+257: Kalkulationswährungskurs	double	
+258: Kalkulationswährung	INT	FOREIGN KEY REFERENCES Währung
+259: Differenzbesteuerung	STRING	
+260: Ankauf	BOOL	
+262: Fehler	INT	FOREIGN KEY REFERENCES Fehler
+265: QRData	STRING	
+268: Als Aufwand buchen	BOOL	
+277: Bilder	STRING	
+278: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+282: Wartungsauftrag	INT	FOREIGN KEY REFERENCES Wartungsauftrag
+283: Titel nachgestellt	STRING	
+289: Anzahlung	BOOL	
+290: abgezogen in	INT	FOREIGN KEY REFERENCES Rechnung
+293: Bankgarantie	MONEY	
+294: Fälligkeit Bankgarantie	DATETIME	
+295: Rückforderung am	DATETIME	
+296: Anmerkung Bankgarantie	STRING	
+298: Paketinformation	BLOB	
+299: Kontoregeln	STRING	
+303: DHL-Sendungsnummern	STRING	
+304: Exportiert Hogast (andere Belege)	BOOL	
+306: Steuercode Hauptleistung	INT	FOREIGN KEY REFERENCES Steuercode
+307: Steuersatz Hauptleistung	INT	FOREIGN KEY REFERENCES Steuersatz
+308: Artikel Hauptleistung	INT	FOREIGN KEY REFERENCES Artikel
+310: TSETransactionNumber	Integer	
+311: Exportiert Hogast	BOOL	
+312: TSE_BON_ID	STRING	
+314: Sendung besteht aus	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+315: Fußtext 4	STRING	
+316: Fußtext 5	STRING	
+317: Gerät	INT	FOREIGN KEY REFERENCES Gerät
+320: Anlieferungen	STRING	
+321: Empfänger	INT	FOREIGN KEY REFERENCES Kunde
+322: Webshopbestellung	BOOL	
+323: Ansprechpartner	INT	FOREIGN KEY REFERENCES Mitarbeiter
+325: Edifact Information	STRING	
+326: Lieferkosten verrechnet	BOOL	
+327: Verr. Lieferpos. nicht anlegen	BOOL	
+328: Marge-Preise	STRING	
+329: BonMoment	STRING	
+330: Fortschritt	double	
+331: Projektordnerpfad	STRING	
+332: TSE_KASSA_ID	STRING	
+335: Termingeschäft	DATETIME	
+336: Termingeschaeft informiert	DATETIME	
+337: Termingeschäft erledigt	BOOL	
+341: Lief. Rechnung	Integer	
+342: FixeProvisionEingetragen	BOOL	
+343: Dropshippment Bestellung	BOOL	
+344: Lieferbar	BOOL	
+345: Vollständig ausgeliefert	BOOL	
+346: Produktionsbeschreibung	STRING	
+347: TeilRabatt1	double	
+348: TeilRabatt2	double	
+349: Bemerkung Angebot	STRING	
+350: Bemerkung Auftrag	STRING	
+351: Bemerkung Lieferung	STRING	
+352: Bemerkung Verrechnung	STRING	
+353: Eigenfertigungsbeleg	BOOL	
+354: Buchungssperre	BOOL	
+
+Tabelle: Lieferpositionen (Tabellennummer = 155)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: Besitzer	INT	FOREIGN KEY REFERENCES Lieferung
+3: Positionstyp	INT	FOREIGN KEY REFERENCES Positionstyp
+4: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+5: Bezeichnung/Text	STRING	
+6: Menge	double	
+7: Variante	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft1
+8: Eigenschaft 2	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+9: Echtmenge	double	
+10: Einzelpreis Netto	MONEY	
+11: Nettosumme Artikel	MONEY	
+12: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+13: Umsatzsteuer Gesamt	MONEY	
+14: Steuer 2	MONEY	
+15: Steuer 3	MONEY	
+16: Bruttosumme Gesamt	MONEY	
+17: Nettosumme Gesamt	MONEY	
+18: EK-Preis Variante	MONEY	
+19: Beschreibung 1	STRING	
+20: Beschreibung 2	STRING	
+21: Bemerkung (intern)	STRING	
+22: Charge/Seriennummer	STRING	
+23: Variante 1	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft1
+24: Variante 2	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+25: Gewicht kg	double	
+26: Arbeitsstunden	double	
+27: Gesamt Einstandspreis	MONEY	
+28: Gesamtkosten	MONEY	
+29: DB 1	MONEY	
+30: DB 2	MONEY	
+31: Stundensatz	MONEY	
+32: Einzel Einkaufspreis	MONEY	
+33: Wert Retourmenge	MONEY	
+34: Mietdauer Tage	Integer	
+35: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+36: Kostenträger	INT	FOREIGN KEY REFERENCES Kostenträger KORE
+37: Provisionsstufe	INT	FOREIGN KEY REFERENCES Provisionsstufe
+38: Bild 1	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+39: Lager	INT	FOREIGN KEY REFERENCES Lager
+40: Stellplätze	STRING	
+41: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+42: Rabatt Artikel	double	
+43: Aufschlag Lohn	double	
+44: ARA	MONEY	
+45: Nettosumme Arbeit	MONEY	
+46: Preis geändert	BOOL	
+47: gebucht	BOOL	
+48: EK geändert	BOOL	
+49: Maschine	INT	FOREIGN KEY REFERENCES Ressource
+50: Maschinenstunden	double	
+51: Maschinensatz	MONEY	
+52: Maschinenkosten	MONEY	
+53: Maschinenaufschlag	double	
+54: Maschinenumsatz	MONEY	
+55: Farbe	Integer	
+56: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+57: NEM	double	
+60: ARA gesetzl. Abgabe	MONEY	
+61: Sonderpreis	BOOL	
+63: Lieferdatum	DATETIME	
+64: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+65: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+68: GUID	STRING	
+69: Revisionsnummer	STRING	
+70: Pos-Nr	STRING	
+71: Luecken	Integer	
+72: Angeboten	BOOL	
+73: DB %	double	
+74: Arbeitsstunden pro Stück	double	
+75: Stundensatz	MONEY	
+76: Lohn pro Stück	MONEY	
+77: Sonstige Kosten pro Stück	MONEY	
+78: Zeit Gesamt	double	
+79: Lohn Rabatt %	double	
+80: Kosten Rabatt %	double	
+81: RestXML	STRING	
+82: Interne PosNr	Integer	
+88: Einzelpreis Brutto	MONEY	
+92: Rabatt geändert	BOOL	
+94: Auftragsposition	INT	FOREIGN KEY REFERENCES Auftragspositionen
+99: Feingewicht	double	
+100: Raugewicht	double	
+101: Preisimport	DATETIME	
+102: Differenzbesteuert	BOOL	
+103: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+104: Abw. Konto	Integer	
+105: LagerwertText	STRING	
+106: Mindestmengenzuschlag	MONEY	
+112: Produktionslink	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+113: Anzahlungsposition	BOOL	
+116: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+120: Produktionsende	DATETIME	
+121: TSE Originalpreis Netto	MONEY	
+122: TSE Originalpreis Brutto	MONEY	
+123: TSE Originalpreis USt	MONEY	
+124: Steuercode geändert	BOOL	
+126: Netto eingegeben	BOOL	
+127: Brutto eingegeben	BOOL	
+128: Lieferposition	Integer	
+129: Verpackung	INT	FOREIGN KEY REFERENCES Verpackung
+130: Umverpackung	INT	FOREIGN KEY REFERENCES Verpackung
+131: Menge Umverpack.	double	
+132: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+133: Marge-Preis bereits gebucht	BOOL	
+134: Lager Ein	INT	FOREIGN KEY REFERENCES Lager
+135: Setliste	BLOB	
+143: Manufakturkosten	MONEY	
+144: Aufschlag	MONEY	
+145: Bild 2	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+146: Bild 3	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+147: Bild 4	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+159: Zolltarif-Nr.	STRING	
+160: Zolltarif-Nr. 2	STRING	
+171: Anzahlungsbeleg	INT	FOREIGN KEY REFERENCES Rechnung
+
+Tabelle: Lieferant (Tabellennummer = 180)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Name	STRING	
+6: Zusatz	STRING	
+7: Name_7	STRING	
+8: Titel	STRING	
+9: Vorname	STRING	
+10: Kredit.Nr	STRING	
+11: Straße	STRING	
+12: PLZ	STRING	
+13: Ort	STRING	
+14: Land	INT	FOREIGN KEY REFERENCES Land
+15: Telefon 1	STRING	
+16: Telefon 2	STRING	
+17: Fax	STRING	
+18: E-Mail	STRING	
+19: Homepage	STRING	
+20: Ansprechpartner	BLOB	
+21: Kategorie	INT	FOREIGN KEY REFERENCES Lieferant Kategorie
+22: Branche	INT	FOREIGN KEY REFERENCES Branche
+23: GMP Klasse	INT	FOREIGN KEY REFERENCES Lieferant Eigenschaft1
+24: GMP Freigabe	INT	FOREIGN KEY REFERENCES Lieferant Eigenschaft2
+25: Eigenschaft 3	INT	FOREIGN KEY REFERENCES Lieferant Eigenschaft3
+26: Garantie Monate	Integer	
+27: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+29: Einkäufer	INT	FOREIGN KEY REFERENCES Mitarbeiter
+30: Bemerkung	STRING	
+31: UID-Nummer	STRING	
+32: Landspezifikation	INT	FOREIGN KEY REFERENCES Landspezifikation
+33: Eigene Kundennummer	STRING	
+34: Sprache	INT	FOREIGN KEY REFERENCES Sprache
+35: Währung	INT	FOREIGN KEY REFERENCES Währung
+36: Artikelgruppen	STRING	
+37: Fixer Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+38: Zahlungsart	INT	FOREIGN KEY REFERENCES Zahlungsart
+39: Zahlungsziel	INT	FOREIGN KEY REFERENCES Kondition
+40: Versandart	INT	FOREIGN KEY REFERENCES Versandart
+41: Lieferkosten Netto/Ust%	MONEY	
+42: Lieferkosten Ust %	double	
+43: Lieferkosten Brutto	MONEY	
+44: Lieferung frei ab	MONEY	
+45: Lieferzeit in Tagen	Integer	
+46: Kreditlimit	MONEY	
+47: Mindestbestellwert	MONEY	
+48: Frachtkosten Fix	MONEY	
+49: Incoterms	INT	FOREIGN KEY REFERENCES Incoterms
+50: Rabatt	double	
+51: Max. Retourmenge	double	
+52: Kontonummer	STRING	
+53: BLZ	STRING	
+54: Bank	STRING	
+55: BIC	STRING	
+56: Incoterms Ort	STRING	
+57: IBAN	STRING	
+61: Konto 	INT	FOREIGN KEY REFERENCES Konto Fibu
+62: Deb/Kred Konto 	INT	FOREIGN KEY REFERENCES Konto Fibu
+65: BKZ1	INT	FOREIGN KEY REFERENCES Bilanzkennzahl
+66: BKZ2	INT	FOREIGN KEY REFERENCES Bilanzkennzahl
+67: BWA1	INT	FOREIGN KEY REFERENCES BWA
+68: BWA2	INT	FOREIGN KEY REFERENCES BWA
+69: BWA3	INT	FOREIGN KEY REFERENCES BWA
+70: Intrastat Verkehrszweig	INT	FOREIGN KEY REFERENCES Intrastat Verkehrszweig
+71: Intrastat Stat.Verfahren	INT	FOREIGN KEY REFERENCES Intrastat Stat_ Verfahren
+72: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+73: Kostenträger	INT	FOREIGN KEY REFERENCES Kostenträger KORE
+76: Umsatz gesamt	MONEY	
+77: Umsatz Vorjahr	MONEY	
+78: Umsatz heuer	MONEY	
+79: Bestellungen gesamt	Integer	
+80: Bestellungen Vorjahr	Integer	
+81: Bestellungen heuer	Integer	
+82: Letzter Umsatz Datum	DATETIME	
+83: Letzter Umsatz Betrag	MONEY	
+84: Budget	INT	FOREIGN KEY REFERENCES Budget
+85: Offener Betrag	MONEY	
+89: OutlookID	STRING	
+90: Dokumente	STRING	
+91: Zusatzinformationen	BLOB	
+92: Bestelltext	STRING	
+93: Ereignisse	BLOB	
+94: Prozeß-Ereignisse	STRING	
+95: Kopftext Bestellung	INT	FOREIGN KEY REFERENCES Textauswahl
+96: Fußtext Bestellung	INT	FOREIGN KEY REFERENCES Textauswahl
+98: Zoll	double	
+102: GMP Datum Beurteilung	DATETIME	
+105: Ust-befreit	BOOL	
+114: GMP Bemerkung	STRING	
+117: GUID	STRING	
+118: Anrede pers.(Du)	BOOL	
+119: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+120: Letzte Qualifizierung	DATETIME	
+121: Nächste Qualifizierung	DATETIME	
+122: Qualifiz.frequenz Monate	Integer	
+123: Zertifikate	BLOB	
+124: Bilder	STRING	
+125: Titel nachgestellt	STRING	
+126: gesperrt	BOOL	
+127: Projektordnerpfad	STRING	
+
+Tabelle: Bestellung Lieferant (Tabellennummer = 185)
+Spalten:
+1: id	Integer	PRIMARY KEY
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+2: aktiv	BOOL	
+5: Bestellnummer	STRING	
+6: Datum	DATETIME	
+7: Lieferdatum	DATETIME	
+8: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+9: Bearbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+10: Vertrag	INT	FOREIGN KEY REFERENCES Rahmenvertrag Einkauf
+11: Name	STRING	
+12: Zusatz	STRING	
+13: z.Hd._13	STRING	
+14: Titel	STRING	
+15: Vorname	STRING	
+16: Zeichen Lieferant	STRING	
+17: Straße	STRING	
+18: PLZ	STRING	
+19: Ort	STRING	
+20: Land	INT	FOREIGN KEY REFERENCES Land
+21: Landspezifikation	INT	FOREIGN KEY REFERENCES Landspezifikation
+22: Lager	INT	FOREIGN KEY REFERENCES Lager
+23: Firma	STRING	
+24: Straße	STRING	
+25: PLZ	STRING	
+26: Ort	STRING	
+27: Land	INT	FOREIGN KEY REFERENCES Land
+28: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+29: UID-Nummer	STRING	
+30: z.Hd.	STRING	
+31: Eigene Kundennummer	STRING	
+32: Sprache	INT	FOREIGN KEY REFERENCES Sprache
+33: Währung	INT	FOREIGN KEY REFERENCES Währung
+34: Zahlungsart	INT	FOREIGN KEY REFERENCES Zahlungsart
+35: Zahlungsziel	INT	FOREIGN KEY REFERENCES Kondition
+36: Versandart	INT	FOREIGN KEY REFERENCES Versandart
+37: Intrastat Verkehrszweig	INT	FOREIGN KEY REFERENCES Intrastat Verkehrszweig
+38: Intrastat Stat.Verfahren	INT	FOREIGN KEY REFERENCES Intrastat Stat_ Verfahren
+39: Lieferkosten Netto	MONEY	
+40: Ust%	double	
+41: Lieferkosten Brutto	MONEY	
+42: Lieferung frei ab	MONEY	
+43: Lieferzeit in Tagen	Integer	
+44: Rabatt	double	
+45: Max. Retourmenge	double	
+46: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+47: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+48: Rechnung	INT	FOREIGN KEY REFERENCES Rechnung Lieferant
+49: Kontonummer	STRING	
+50: BLZ	STRING	
+51: Erster Artikel	STRING	
+52: SWIFT BIC	STRING	
+53: Angebot	INT	FOREIGN KEY REFERENCES Angebot Lieferant
+54: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+55: Transportart	INT	FOREIGN KEY REFERENCES Transportart
+56: Spedition	INT	FOREIGN KEY REFERENCES Spedition
+57: Incoterms	INT	FOREIGN KEY REFERENCES Incoterms
+58: Incoterms Ort	STRING	
+59: Kopftext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+60: Kopftext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+61: Kopftext 3	STRING	
+62: Fußtext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+63: Fußtext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+64: Fußtext 3	STRING	
+65: Prozeß-Ereignisse	STRING	
+66: Ansprechpartner Spedition	STRING	
+67: Summe Netto	MONEY	
+68: Summe Ust	MONEY	
+69: Summe Steuer1	MONEY	
+70: Summe Steuer2	MONEY	
+71: Summe Brutto	MONEY	
+72: Gewicht kg	double	
+73: Volumen ccm	double	
+74: Speditionspreis	MONEY	
+75: Wert Retourmenge	MONEY	
+76: Anteil Retourmenge	double	
+77: ARA-Gesamt	MONEY	
+78: Anfrage	INT	FOREIGN KEY REFERENCES Anfrage Lieferant
+79: Positionen	STRING	
+80: Palettenaufteilung	BLOB	
+81: Bemerkung	STRING	
+82: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+83: gedruckt	BOOL	
+84: gebucht	BOOL	
+85: Lagereingang gebucht	BOOL	
+86: Statistik gebucht	BOOL	
+87: Status2	BOOL	
+88: Status3	BOOL	
+89: Status3	BOOL	
+90: Buchungstabelle	Integer	
+91: Buchungsdatensatz FIBU	Integer	
+92: Buchungsdatensatz EA	Integer	
+93: Farbe	Integer	
+94: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+95: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+96: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+97: Arbeitspaket	INT	FOREIGN KEY REFERENCES Arbeitspaket
+98: Zoll	double	
+100: Mindestbestellwert	MONEY	
+102: Ust-befreit	BOOL	
+104: erledigt	BOOL	
+105: Dokumente	STRING	
+107: GUID	STRING	
+112: Währungskurs	double	
+113: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+115: Preise fixiert	BOOL	
+116: Lieferkosten Netto 2	MONEY	
+117: Lieferkosten Ust % 2	double	
+127: Ansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+128: Beleg immer BRUTTO rechnen	BOOL	
+129: Leistung von	DATETIME	
+130: Leistung bis	DATETIME	
+131: Kundenansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+133: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+134: Zielfiliale	INT	FOREIGN KEY REFERENCES Filiale
+135: Versandmandant	INT	FOREIGN KEY REFERENCES Mandant
+136: Lager Ausgang	INT	FOREIGN KEY REFERENCES Lager
+137: Kalkulationswährungskurs	double	
+138: Kalkulationswährung	INT	FOREIGN KEY REFERENCES Währung
+139: Fehler	INT	FOREIGN KEY REFERENCES Fehler
+140: Zahlung Exportiert	BOOL	
+143: Bilder	STRING	
+144: Bilder2	STRING	
+145: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+146: Nicht verrechnen	BOOL	
+147: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+148: FW Summe Brutto	MONEY	
+149: FW Summe Ust	MONEY	
+150: FW Summe Netto	MONEY	
+151: Titel nachgestellt	STRING	
+153: EMail versendet	BOOL	
+154: Lieferbemerkung	STRING	
+155: z.Hd.	STRING	
+156: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+157: Kontoregeln	STRING	
+158: Intrastat Art des Geschäfts	INT	FOREIGN KEY REFERENCES Intrastat Geschäftsart
+159: Rahmenvertrag VK	INT	FOREIGN KEY REFERENCES Rahmenvertrag Verkauf
+160: Freigegeben	BOOL	
+162: Frage gestellt	BOOL	
+163: Ausgangslieferschein	INT	FOREIGN KEY REFERENCES Lieferung
+165: AB erhalten	BOOL	
+166: Projektordnerpfad	STRING	
+168: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+169: Externarbeit	BOOL	
+170: TeilRabatt1	double	
+171: TeilRabatt2	double	
+172: xRechnung XML	STRING	
+
+Tabelle: Bestellpositionen Lieferant (Tabellennummer = 186)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+3: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+4: Artikelnummer	STRING	
+5: Bezeichnung	STRING	
+6: Menge	double	
+7: Gelieferte Menge	double	
+8: Retourmenge	double	
+9: Echtmenge	double	
+10: Einzelpreis Netto	MONEY	
+11: Summe Netto	MONEY	
+12: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+13: Umsatzsteuer	MONEY	
+14: Steuer 2	MONEY	
+15: Steuer 3	MONEY	
+16: Summe Brutto	MONEY	
+17: Gewicht kg	double	
+18: Volumen ccm	double	
+19: Bemerkung	STRING	
+20: Lager	INT	FOREIGN KEY REFERENCES Lager
+21: Stellplätze	STRING	
+22: Preis Gewicht	MONEY	
+23: Summe Gewicht	MONEY	
+24: Charge/Seriennummer	STRING	
+25: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+26: Rabatt	double	
+28: ARA	MONEY	
+30: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+31: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+32: geliefert	BOOL	
+33: Lieferdatum	DATETIME	
+34: GUID	STRING	
+35: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+40: Preis geändert	BOOL	
+41: Brutto Preis eingegeben	BOOL	
+42: Brutto Einzelwert	double	
+43: Netto Einzelwert	double	
+44: Buchungstext	STRING	
+45: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+46: Gelieferte Menge	double	
+47: Auftrags-Pos	INT	FOREIGN KEY REFERENCES Auftragspositionen
+48: Kein Lager buchen	BOOL	
+50: Zertifikat vorhanden	BOOL	
+58: Bemerkung (intern)	STRING	
+59: Preisimport	DATETIME	
+60: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+61: Abw. Konto	Integer	
+62: Einzelpreis Brutto	MONEY	
+63: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+64: Lieferung-Pos	INT	FOREIGN KEY REFERENCES Lieferpositionen Lieferant
+65: LagerwertText	STRING	
+66: Gebucht	BOOL	
+67: Positionsnummer	STRING	
+68: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+70: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+71: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+
+Tabelle: Lieferung Lieferant (Tabellennummer = 187)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Liefernummer	STRING	
+6: Datum	DATETIME	
+7: Lieferdatum	DATETIME	
+8: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+9: Bearbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+10: Vertrag	INT	FOREIGN KEY REFERENCES Rahmenvertrag Einkauf
+11: Name	STRING	
+12: Zusatz	STRING	
+13: z.Hd._13	STRING	
+14: Titel / nachgest.	STRING	
+15: Vorname	STRING	
+16: Zeichen Lief.	STRING	
+17: Straße	STRING	
+18: PLZ	STRING	
+19: Ort	STRING	
+20: Land	INT	FOREIGN KEY REFERENCES Land
+21: Landspezifikation	INT	FOREIGN KEY REFERENCES Landspezifikation
+22: Lager	INT	FOREIGN KEY REFERENCES Lager
+23: Firma	STRING	
+24: Straße	STRING	
+25: PLZ/Ort	STRING	
+26: Ort	STRING	
+27: Land	INT	FOREIGN KEY REFERENCES Land
+28: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+29: UID-Nummer	STRING	
+31: Eigene Kundennummer	STRING	
+32: Sprache	INT	FOREIGN KEY REFERENCES Sprache
+33: Währung	INT	FOREIGN KEY REFERENCES Währung
+34: Zahlungsart	INT	FOREIGN KEY REFERENCES Zahlungsart
+35: Zahlungsziel	INT	FOREIGN KEY REFERENCES Kondition
+36: Versandart	INT	FOREIGN KEY REFERENCES Versandart
+37: Verkehrszweig (Intrastat)	INT	FOREIGN KEY REFERENCES Intrastat Verkehrszweig
+38: Stat. Verfahren (Intrastat)	INT	FOREIGN KEY REFERENCES Intrastat Stat_ Verfahren
+39: Lieferkosten Netto	MONEY	
+40: Ust%	double	
+41: Brutto	MONEY	
+42: Lieferung frei ab	MONEY	
+43: Lieferzeit in Tagen	Integer	
+44: Rabatt	double	
+45: Max. Retourmenge	double	
+46: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+47: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+48: Rechnung	INT	FOREIGN KEY REFERENCES Rechnung Lieferant
+49: Kontonummer	STRING	
+50: BLZ	STRING	
+51: Erster Artikel	STRING	
+52: SWIFT BIC	STRING	
+53: FIBU-Konto	INT	FOREIGN KEY REFERENCES Konto Fibu
+54: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+55: Transportart	INT	FOREIGN KEY REFERENCES Transportart
+56: Spedition	INT	FOREIGN KEY REFERENCES Spedition
+57: Incoterms	INT	FOREIGN KEY REFERENCES Incoterms
+58: Incoterms Ort	STRING	
+59: Kopftext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+60: Kopftext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+61: Kopftext 3	STRING	
+62: Fußtext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+63: Fußtext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+64: Fußtext 3	STRING	
+65: Prozeß-Ereignisse	STRING	
+66: Ansprechpartner Spedition	STRING	
+67: Summe Netto	MONEY	
+68: Summe Ust	MONEY	
+69: Summe Steuer1	MONEY	
+70: Summe Steuer2	MONEY	
+71: Summe Brutto	MONEY	
+72: Gewicht kg	double	
+73: Volumen ccm	double	
+74: Speditionspreis	MONEY	
+75: Wert Retourmenge	MONEY	
+76: Anteil Retourmenge	double	
+77: ARA-Gesamt	MONEY	
+78: Anfrage	Integer	
+79: Positionen	STRING	
+80: Palettenaufteilung	BLOB	
+81: Bemerkung	STRING	
+82: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+83: gedruckt	BOOL	
+84: gebucht	BOOL	
+85: Lagereingang gebucht	BOOL	
+86: Statistik gebucht	BOOL	
+87: Status2	BOOL	
+88: Status3	BOOL	
+89: Status3	BOOL	
+90: Buchungstabelle	Integer	
+91: Buchungsdatensatz FIBU	Integer	
+92: Buchungsdatensatz EA	Integer	
+93: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+94: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+95: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+96: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+97: Arbeitspaket	INT	FOREIGN KEY REFERENCES Arbeitspaket
+98: Zoll	double	
+100: Mindestbestellwert	MONEY	
+102: Ust-befreit	BOOL	
+103: Preise fixiert	BOOL	
+104: erledigt	BOOL	
+105: Dokumente	STRING	
+106: Rückgabe	BOOL	
+107: GUID	STRING	
+112: Währungskurs	double	
+115: Preise fixiert	BOOL	
+116: Lieferkosten Netto 2	MONEY	
+117: Lieferkosten Ust % 2	double	
+127: Ansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+128: Beleg immer BRUTTO rechnen	BOOL	
+129: Leistung von	DATETIME	
+130: Leistung bis	DATETIME	
+131: Kundenansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+132: Bestellungen Sammellieferschein	STRING	
+133: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+134: Zielfiliale	INT	FOREIGN KEY REFERENCES Filiale
+135: Zielmandant	INT	FOREIGN KEY REFERENCES Mandant
+136: Lager Ausgang	INT	FOREIGN KEY REFERENCES Lager
+137: Kalkulationswährungskurs	double	
+138: Kalkulationswährung	INT	FOREIGN KEY REFERENCES Währung
+139: Fehler	INT	FOREIGN KEY REFERENCES Fehler
+140: Zahlung Exportiert	BOOL	
+143: Bilder	STRING	
+144: Bilder2	STRING	
+145: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+146: Nicht verrechnen	BOOL	
+147: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+148: FW Summe Brutto	MONEY	
+149: FW Summe Ust	MONEY	
+150: FW Summe Netto	MONEY	
+151: Titel nachgestellt	STRING	
+153: Per Mail versendet	BOOL	
+154: Lieferbemerkung	STRING	
+155: z.Hd.	STRING	
+156: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+157: Kontoregeln	STRING	
+158: Art des Geschäfts (Intrastat)	INT	FOREIGN KEY REFERENCES Intrastat Geschäftsart
+159: Rahmenvertrag VK	INT	FOREIGN KEY REFERENCES Rahmenvertrag Verkauf
+160: Freigegeben	BOOL	
+162: Frage gestellt	BOOL	
+163: Ausgangslieferschein	INT	FOREIGN KEY REFERENCES Lieferung
+165: AB erhalten	BOOL	
+166: Projektordnerpfad	STRING	
+168: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+169: Externarbeit	BOOL	
+170: TeilRabatt1	double	
+171: TeilRabatt2	double	
+172: xRechnung XML	STRING	
+
+Tabelle: Lieferpositionen Lieferant (Tabellennummer = 188)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+3: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+4: Artikelnummer	STRING	
+5: Bezeichnung	STRING	
+6: Menge	double	
+7: Gelieferte Menge	double	
+8: Retourmenge	double	
+9: Echtmenge	double	
+10: Einzelpreis Netto	MONEY	
+11: Summe Netto	MONEY	
+12: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+13: Umsatzsteuer	MONEY	
+14: Steuer 2	MONEY	
+15: Steuer 3	MONEY	
+16: Summe Brutto	MONEY	
+17: Gewicht kg	double	
+18: Volumen ccm	double	
+19: Bemerkung	STRING	
+20: Lager	INT	FOREIGN KEY REFERENCES Lager
+21: Stellplätze	STRING	
+22: Preis Gewicht	MONEY	
+23: Summe Gewicht	MONEY	
+24: Charge/Seriennummer	STRING	
+25: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+26: Rabatt	double	
+28: ARA	MONEY	
+30: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+31: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+33: Lieferdatum	DATETIME	
+34: GUID	STRING	
+35: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+40: Preis geändert	BOOL	
+41: Brutto Preis eingegeben	BOOL	
+42: Brutto Einzelwert	double	
+43: Netto Einzelwert	double	
+44: Buchungstext	STRING	
+45: Bestell-Pos	INT	FOREIGN KEY REFERENCES Bestellpositionen Lieferant
+46: Gelieferte Menge	double	
+47: Auftrags-Pos	INT	FOREIGN KEY REFERENCES Auftragspositionen
+48: Kein Lager buchen	BOOL	
+50: Zertifikat vorhanden	BOOL	
+58: Bemerkung (intern)	STRING	
+59: Preisimport	DATETIME	
+60: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+61: Abw. Konto	Integer	
+62: Einzelpreis Brutto	MONEY	
+63: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+64: Lieferung-Pos	INT	FOREIGN KEY REFERENCES Lieferpositionen Lieferant
+65: LagerwertText	STRING	
+66: Gebucht	BOOL	
+67: Positionsnummer	STRING	
+68: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+70: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+71: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+
+Tabelle: Rechnungspositionen Lieferant (Tabellennummer = 190)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: Besitzer	INT	FOREIGN KEY REFERENCES Rechnung Lieferant
+3: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+4: Artikelnummer	STRING	
+5: Bezeichnung	STRING	
+6: Menge	double	
+7: Gelieferte Menge	double	
+8: Retourmenge	double	
+9: Echtmenge	double	
+10: Einzelpreis Netto	MONEY	
+11: Summe Netto	MONEY	
+12: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+13: Umsatzsteuer	MONEY	
+14: Steuer 2	MONEY	
+15: Steuer 3	MONEY	
+16: Summe Brutto	MONEY	
+17: Gewicht kg	double	
+18: Volumen ccm	double	
+19: Bemerkung	STRING	
+20: Lager	INT	FOREIGN KEY REFERENCES Lager
+21: Stellplätze	STRING	
+22: Preis Gewicht	MONEY	
+23: Summe Gewicht	MONEY	
+24: Charge/Seriennummer	STRING	
+25: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+26: Rabatt	double	
+28: ARA	MONEY	
+30: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+31: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+33: Lieferdatum	DATETIME	
+34: GUID	STRING	
+35: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+40: Preis geändert	BOOL	
+41: Brutto Preis eingegeben	BOOL	
+42: Brutto Einzelwert	double	
+43: Netto Einzelwert	double	
+44: Buchungstext	STRING	
+45: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+46: Gelieferte Menge	double	
+47: Auftrags-Pos	INT	FOREIGN KEY REFERENCES Auftragspositionen
+48: Kein Lager buchen	BOOL	
+58: Bemerkung (intern)	STRING	
+59: Preisimport	DATETIME	
+60: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+61: Abw. Konto	Integer	
+62: Einzelpreis Brutto	MONEY	
+63: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+64: Lieferung-Pos	INT	FOREIGN KEY REFERENCES Lieferpositionen Lieferant
+65: LagerwertText	STRING	
+66: Gebucht	BOOL	
+67: Positionsnummer	STRING	
+68: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+70: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+71: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+
+Tabelle: Offene Einkaufspositionen (Tabellennummer = 191)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Lager	INT	FOREIGN KEY REFERENCES Lager
+7: Offene Menge	double	
+8: Bestelldatum	DATETIME	
+9: Lieferdatum	DATETIME	
+10: Ursprungsmenge	double	
+11: Bestellposition	INT	FOREIGN KEY REFERENCES Bestellpositionen Lieferant
+12: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+13: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+14: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+15: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+18: Einzelpreis	MONEY	
+19: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+20: Bezeichnung	STRING	
+21: Variante 1	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft1
+22: Variante 2	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+25: Artikelnummer	STRING	
+26: Setlistenartikel	BOOL	
+27: Rahmenvertrag	INT	FOREIGN KEY REFERENCES Rahmenvertrag Einkauf
+28: Prozesstext	STRING	
+29: Gegenlager	INT	FOREIGN KEY REFERENCES Lager
+30: GUID	STRING	
+31: Produktion	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+33: Farbe	Integer	
+
+Tabelle: Anfrage Lieferant (Tabellennummer = 192)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Anfragenummer	STRING	
+6: Datum	DATETIME	
+7: Lieferdatum	DATETIME	
+8: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+9: Bearbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+11: Name_11	STRING	
+12: Zusatz	STRING	
+13: z.Hd._13	STRING	
+14: Titel	STRING	
+15: Vorname	STRING	
+17: Straße_17	STRING	
+18: PLZ	STRING	
+19: Ort_19	STRING	
+20: Land	INT	FOREIGN KEY REFERENCES Land
+21: Landspezifikation	INT	FOREIGN KEY REFERENCES Landspezifikation
+22: Lieferantenangebot	INT	FOREIGN KEY REFERENCES Angebot Lieferant
+23: Angebot	INT	FOREIGN KEY REFERENCES Angebot
+24: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+25: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+26: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+27: Kopftext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+28: Kopftext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+29: Kopftext 3	STRING	
+30: Fußtext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+31: Fußtext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+32: Fußtext 3	STRING	
+33: Prozeß-Ereignisse	STRING	
+34: Sprache	INT	FOREIGN KEY REFERENCES Sprache
+35: Währung	INT	FOREIGN KEY REFERENCES Währung
+36: Kundenanfrage	INT	FOREIGN KEY REFERENCES Kundenanfrage
+37: Positionen	STRING	
+38: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+39: Bemerkung	STRING	
+40: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+41: gedruckt	BOOL	
+42: gebucht	BOOL	
+43: Incoterms	INT	FOREIGN KEY REFERENCES Incoterms
+44: Incoterms Ort	STRING	
+50: erledigt	BOOL	
+52: Dokumente	STRING	
+64: Preise fixiert	BOOL	
+80: DUMMYBOOL	BOOL	
+81: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+82: Bilder	STRING	
+83: Bilder2	STRING	
+84: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+85: Nicht verrechnen	BOOL	
+86: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+87: FW Summe Brutto	MONEY	
+88: FW Summe Ust	MONEY	
+89: FW Summe Netto	MONEY	
+90: Titel nachgestellt	STRING	
+92: Per Mail versendet	BOOL	
+93: Lager	INT	FOREIGN KEY REFERENCES Lager
+94: Firma	STRING	
+95: Straße	STRING	
+96: PLZ	STRING	
+97: Ort	STRING	
+98: Land	INT	FOREIGN KEY REFERENCES Land
+99: Lieferbemerkung	STRING	
+100: z.Hd.	STRING	
+101: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+102: Lieferantenbestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+104: Frage gestellt	BOOL	
+105: Ausgangslieferschein	INT	FOREIGN KEY REFERENCES Lieferung
+106: Projektordnerpfad	STRING	
+
+Tabelle: Anfragepositionen Lieferant (Tabellennummer = 193)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: Besitzer	INT	FOREIGN KEY REFERENCES Anfrage Lieferant
+3: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+4: Artikelnummer	STRING	
+5: Bezeichnung	STRING	
+6: Menge	double	
+7: Gelieferte Menge	double	
+8: Retourmenge	double	
+9: Echtmenge	double	
+10: Einzelpreis Netto	MONEY	
+11: Summe Netto	MONEY	
+12: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+13: Umsatzsteuer	MONEY	
+14: Steuer 2	MONEY	
+15: Steuer 3	MONEY	
+16: Summe Brutto	MONEY	
+17: Gewicht kg	double	
+18: Volumen ccm	double	
+19: Bemerkung	STRING	
+20: Lager	INT	FOREIGN KEY REFERENCES Lager
+21: Stellplätze	STRING	
+22: Wert Bestellmenge	MONEY	
+23: Wert Retourmenge	MONEY	
+24: Charge/Seriennummer	STRING	
+25: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+26: Angebot	INT	FOREIGN KEY REFERENCES Angebot
+28: ARA	MONEY	
+30: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+31: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+33: Lieferdatum	DATETIME	
+34: GUID	STRING	
+35: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+40: Preis geändert	BOOL	
+41: Brutto Preis eingegeben	BOOL	
+42: Brutto Einzelwert	double	
+43: Netto Einzelwert	double	
+44: Buchungstext	STRING	
+45: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+46: Gelieferte Menge	double	
+47: Auftrags-Pos	INT	FOREIGN KEY REFERENCES Auftragspositionen
+48: Kein Lager buchen	BOOL	
+58: Bemerkung (intern)	STRING	
+59: Preisimport	DATETIME	
+60: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+61: Abw. Konto	Integer	
+62: Einzelpreis Brutto	MONEY	
+63: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+64: Lieferung-Pos	INT	FOREIGN KEY REFERENCES Lieferpositionen Lieferant
+65: LagerwertText	STRING	
+66: Gebucht	BOOL	
+67: Positionsnummer	STRING	
+68: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+70: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+71: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+
+Tabelle: Angebot Lieferant (Tabellennummer = 194)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+4: geändert am	DATETIME	
+3: erzeugt am	DATETIME	
+5: Angebotsnummer	STRING	
+6: Datum	DATETIME	
+7: Lieferdatum	DATETIME	
+8: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+9: Bearbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+11: Name_11	STRING	
+12: Zusatz	STRING	
+13: z.Hd._13	STRING	
+14: Titel	STRING	
+15: Vorname	STRING	
+16: Zeichen Lieferant	STRING	
+17: Straße_17	STRING	
+18: PLZ	STRING	
+19: Ort_19	STRING	
+20: Land	INT	FOREIGN KEY REFERENCES Land
+21: Landspezifikation	INT	FOREIGN KEY REFERENCES Landspezifikation
+22: Lager	INT	FOREIGN KEY REFERENCES Lager
+23: Firma	STRING	
+24: Straße	STRING	
+25: PLZ	STRING	
+26: Ort_26	STRING	
+27: Land	INT	FOREIGN KEY REFERENCES Land
+28: Kundenanfrage	INT	FOREIGN KEY REFERENCES Kundenanfrage
+29: UID-Nummer	STRING	
+31: Eigene Kundennummer	STRING	
+32: Sprache	INT	FOREIGN KEY REFERENCES Sprache
+33: Währung	INT	FOREIGN KEY REFERENCES Währung
+34: Zahlungsart	INT	FOREIGN KEY REFERENCES Zahlungsart
+35: Zahlungsziel	INT	FOREIGN KEY REFERENCES Kondition
+36: Versandart	INT	FOREIGN KEY REFERENCES Versandart
+37: Intrastat Verkehrszweig	INT	FOREIGN KEY REFERENCES Intrastat Verkehrszweig
+38: Intrastat Stat.Verfahren	INT	FOREIGN KEY REFERENCES Intrastat Stat_ Verfahren
+39: Lieferkosten Netto	MONEY	
+40: Ust%	double	
+41: Brutto	MONEY	
+42: Lieferung frei ab	MONEY	
+43: Lieferzeit in Tagen	Integer	
+44: Rabatt	double	
+45: Max. Retourmenge	double	
+46: Anfrage	INT	FOREIGN KEY REFERENCES Anfrage Lieferant
+47: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+48: Bestellung	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+49: Kontonummer	STRING	
+50: BLZ	STRING	
+51: Erster Artikel	STRING	
+52: SWIFT BIC	STRING	
+53: FIBU-Konto	INT	FOREIGN KEY REFERENCES Konto Fibu
+54: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+55: Transportart	INT	FOREIGN KEY REFERENCES Transportart
+56: Spedition	INT	FOREIGN KEY REFERENCES Spedition
+57: Incoterms	INT	FOREIGN KEY REFERENCES Incoterms
+58: Incoterms Ort	STRING	
+59: Kopftext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+60: Kopftext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+61: Kopftext 3	STRING	
+62: Fußtext 1	INT	FOREIGN KEY REFERENCES Textauswahl
+63: Fußtext 2	INT	FOREIGN KEY REFERENCES Textauswahl
+64: Fußtext 3	STRING	
+66: Ansprechpartner Spedition	STRING	
+67: Summe Netto	MONEY	
+68: Summe Ust	MONEY	
+69: Summe Steuer1	MONEY	
+70: Summe Steuer2	MONEY	
+71: Summe Brutto	MONEY	
+72: Gewicht kg	double	
+73: Volumen ccm	double	
+74: Speditionspreis	MONEY	
+75: Wert Retourmenge	MONEY	
+76: Anteil Retourmenge	double	
+77: ARA-Gesamt	MONEY	
+79: Positionen	STRING	
+81: Bemerkung	STRING	
+82: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+83: gedruckt	BOOL	
+84: gebucht	BOOL	
+85: Lagereingang gebucht	BOOL	
+86: Statistik gebucht	BOOL	
+87: In Beleg übernommen	BOOL	
+88: Status3	BOOL	
+89: Status3	BOOL	
+90: Buchungstabelle	Integer	
+91: Buchungsdatensatz FIBU	Integer	
+92: Buchungsdatensatz EA	Integer	
+93: OP-Datensatz	Integer	
+94: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+95: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+96: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+97: Angebot	INT	FOREIGN KEY REFERENCES Angebot
+100: Mindestbestellwert	MONEY	
+102: Ust-befreit	BOOL	
+105: Dokumente	STRING	
+107: GUID	STRING	
+112: Währungskurs	double	
+115: Preise fixiert	BOOL	
+116: Ansprechpartner	INT	FOREIGN KEY REFERENCES Ansprechpartner
+117: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+118: Kalkulationswährungskurs	double	
+119: Kalkulationswährung	INT	FOREIGN KEY REFERENCES Währung
+120: Bilder	STRING	
+121: Bilder2	STRING	
+122: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+123: Nicht verrechnen	BOOL	
+124: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+125: FW Summe Brutto	MONEY	
+126: FW Summe Ust	MONEY	
+127: FW Summe Netto	MONEY	
+128: Titel nachgestellt	STRING	
+129: Per Mail versendet	BOOL	
+130: Intrastat Art des Geschäfts	INT	FOREIGN KEY REFERENCES Intrastat Geschäftsart
+131: Lieferbemerkung	STRING	
+132: z.Hd.	STRING	
+133: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+134: Prozeß-Ereignisse	STRING	
+136: Frage gestellt	BOOL	
+137: Ausgangslieferschein	INT	FOREIGN KEY REFERENCES Lieferung
+138: Projektordnerpfad	STRING	
+139: TeilRabatt1	double	
+140: TeilRabatt2	double	
+
+Tabelle: Angebotspositionen Lieferant (Tabellennummer = 195)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: Besitzer	INT	FOREIGN KEY REFERENCES Angebot Lieferant
+3: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+4: Artikelnummer	STRING	
+5: Bezeichnung	STRING	
+6: Menge	double	
+7: Gelieferte Menge	double	
+8: Retourmenge	double	
+9: Echtmenge	double	
+10: Einzelpreis Netto	MONEY	
+11: Summe Netto	MONEY	
+12: Steuersatz	INT	FOREIGN KEY REFERENCES Steuersatz
+13: Umsatzsteuer	MONEY	
+14: Steuer 2	MONEY	
+15: Steuer 3	MONEY	
+16: Summe Brutto	MONEY	
+17: Gewicht kg	double	
+18: Volumen ccm	double	
+19: Bemerkung	STRING	
+20: Lager	INT	FOREIGN KEY REFERENCES Lager
+21: Stellplätze	STRING	
+22: Preis Gewicht	MONEY	
+23: Summe Gewicht	MONEY	
+24: Charge/Seriennummer	STRING	
+25: Auftrag	INT	FOREIGN KEY REFERENCES Auftrag
+26: Rabatt	double	
+28: ARA	MONEY	
+30: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+31: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+33: Lieferdatum	DATETIME	
+34: GUID	STRING	
+35: Produktionsauftrag	INT	FOREIGN KEY REFERENCES Produktionsauftrag
+40: Preis geändert	BOOL	
+41: Brutto Preis eingegeben	BOOL	
+42: Brutto Einzelwert	double	
+43: Netto Einzelwert	double	
+44: Buchungstext	STRING	
+45: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+46: Gelieferte Menge	double	
+47: Auftrags-Pos	INT	FOREIGN KEY REFERENCES Auftragspositionen
+48: Kein Lager buchen	BOOL	
+58: Bemerkung (intern)	STRING	
+59: Preisimport	DATETIME	
+60: Steuercode	INT	FOREIGN KEY REFERENCES Steuercode
+61: Abw. Konto	Integer	
+62: Einzelpreis Brutto	MONEY	
+63: Lieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+64: Lieferung-Pos	INT	FOREIGN KEY REFERENCES Lieferpositionen Lieferant
+65: LagerwertText	STRING	
+66: Gebucht	BOOL	
+67: Positionsnummer	STRING	
+68: Projekt	INT	FOREIGN KEY REFERENCES Projekt
+70: Intrastat-Nr.	INT	FOREIGN KEY REFERENCES Intrastat Warenkatalog
+71: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+
+Tabelle: Rahmenvertrag Einkauf (Tabellennummer = 196)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Nummer	STRING	
+6: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+7: Gültig von	DATETIME	
+8: Gültig bis	DATETIME	
+9: Erledigt	BOOL	
+19: Positionen	BLOB	
+20: Bemerkung	STRING	
+27: Projektordnerpfad	STRING	
+
+Tabelle: Transportart (Tabellennummer = 198)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Bezeichnung	STRING	
+6: Kurz-Bezeichnung	STRING	
+7: Fremdsprachige Texte	BLOB	
+10: Spedition Lademeter	BOOL	
+
+Tabelle: Mitarbeiter (Tabellennummer = 200)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Name	STRING	
+6: Titel	STRING	
+7: Vorname	STRING	
+8: MA-Nummer	STRING	
+9: SV-Nummer	STRING	
+12: Straße	STRING	
+13: PLZ	STRING	
+14: Ort	STRING	
+15: Land	INT	FOREIGN KEY REFERENCES Land
+16: Telefon Firma	STRING	
+17: Kürzel	STRING	
+18: Fax	STRING	
+19: Telefon Privat 1	STRING	
+20: Telefon Privat 2	STRING	
+21: E-Mail 1	STRING	
+22: Homepage	STRING	
+25: Kategorien	STRING	
+26: Abteilung	INT	FOREIGN KEY REFERENCES Abteilung
+27: AP Freigabe	INT	FOREIGN KEY REFERENCES Mitarbeiter Eigenschaft1
+28: Eigenschaft2	INT	FOREIGN KEY REFERENCES Mitarbeiter Eigenschaft2
+29: Eigenschaft3	INT	FOREIGN KEY REFERENCES Mitarbeiter Eigenschaft3
+30: Tätigkeitsbeschreibung	STRING	
+31: Position	STRING	
+32: Eintrittsdatum	DATETIME	
+33: Austrittsdatum	DATETIME	
+34: Arbeitszeitmodell	INT	FOREIGN KEY REFERENCES Arbeitszeitmodell
+35: Arbeitszeitmodelle	BLOB	
+36: Haupttätigkeit	INT	FOREIGN KEY REFERENCES Tätigkeitstyp
+37: Bemerkung	STRING	
+38: Geburtsname	STRING	
+39: Geb.	DATETIME	
+40: geboren in	STRING	
+41: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+42: Familienstand	INT	FOREIGN KEY REFERENCES Familienstand
+43: seit	DATETIME	
+44: Kinderanzahl	Integer	
+45: Glaubensbekenntnis	STRING	
+46: Staatsangehörigkeit	INT	FOREIGN KEY REFERENCES Land
+47: Kontonummer	STRING	
+48: BLZ	STRING	
+49: Bank	STRING	
+50: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+52: Bemerkung	STRING	
+54: Urlaubsstand (Tage)	double	
+55: Krankenstand Gesamt	double	
+56: Krankenstand heuer	double	
+57: Schulungsstand Gesamt	double	
+58: Schulungsstand heuer	double	
+59: Zeitausgleichstand (h)	double	
+60: Anwesenheitsstatus	INT	FOREIGN KEY REFERENCES Anwesenheitstatus
+62: letzte Kalkulation	DATETIME	
+63: Bemerkung	STRING	
+64: Führerschein	STRING	
+65: Führerschein seit	DATETIME	
+66: Ausbildung	BLOB	
+67: Tätigkeiten	BLOB	
+68: Sprachkenntnisse	BLOB	
+69: Sonstige Kenntnisse	BLOB	
+70: Fortbildungen	BLOB	
+71: Beschäftigungsart	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+73: Kostenart	INT	FOREIGN KEY REFERENCES Kostenart
+74: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+75: Kostenträger	INT	FOREIGN KEY REFERENCES Kostenträger KORE
+76: KORE Kosten/h	MONEY	
+77: Verrechnungskosten/h	MONEY	
+80: Mit-Provisionisten	BLOB	
+84: Wochenstunden	double	
+85: Urlaubsanspruch Tage	double	
+86: Bruttolohn	MONEY	
+87: Stundensatz Brutto	MONEY	
+88: Lohnnebenkosten %	double	
+89: Stunden-Vollkosten	MONEY	
+90: Beitragsgruppe	STRING	
+92: Kollektivvertrag	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+93: Frequenz Bericht	Integer	
+104: Ereignisse	BLOB	
+105: Beurteilungen	BLOB	
+106: Ziele	Integer	
+107: Prozeß-Ereignisse	STRING	
+110: Dokumente	STRING	
+111: Ausstattung	BLOB	
+114: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+117: OutlookID	STRING	
+120: Provision	double	
+121: Zeitausgleich Übertrag	double	
+122: Überstunden Pauschalierung	double	
+127: exportiert	BOOL	
+128: Nicht in Zeitplänen anzeigen	BOOL	
+130: GoogleToken	STRING	
+131: GUID	STRING	
+135: Wochenbericht Leitfragen Bericht	STRING	
+136: Wochenbericht Leitfragen Verbessern	STRING	
+137: KORE Aufteilung	BLOB	
+138: E-Mail 2	STRING	
+139: Chip-Nummer	STRING	
+140: Google Kalender	STRING	
+141: Google Hauptkalender	STRING	
+143: GoogleTokenInfo	STRING	
+144: KORE Faktor %	double	
+145: Interne Nachricht Notiz	BOOL	
+146: Interne Nachricht Mail	BOOL	
+147: AP Startfähig Nachricht Intern	STRING	
+148: Geschäftsführung	BOOL	
+149: Bedienbare Ressourcen	STRING	
+153: Kontrolleur	BOOL	
+154: Reduktion Verrechnung Projektzeit	double	
+
+Tabelle: Ansprechpartner (Tabellennummer = 540)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Name	STRING	
+6: Vorname	STRING	
+7: Titel	STRING	
+8: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+9: Position	STRING	
+10: Tel1	STRING	
+11: Tel2	STRING	
+12: Fax	STRING	
+13: EMail	STRING	
+14: Geburtsdatum	DATETIME	
+15: Bemerkung	STRING	
+16: Adresse	STRING	
+17: PLZ	STRING	
+18: Ort	STRING	
+19: Land	INT	FOREIGN KEY REFERENCES Land
+20: Firma/Filiale	STRING	
+22: Reihenfolge	Integer	
+23: Extern	BOOL	
+24: OutlookID	STRING	
+25: Werbung	BOOL	
+27: DSGVO-Datum	DATETIME	
+28: Kunde	INT	FOREIGN KEY REFERENCES Kunde
+29: Verkäufer	INT	FOREIGN KEY REFERENCES Verkäufer_Vermittler
+30: Werbeadresse	INT	FOREIGN KEY REFERENCES Werbeadresse
+31: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+32: Spedition	INT	FOREIGN KEY REFERENCES Spedition
+34: Betreuer	INT	FOREIGN KEY REFERENCES Mitarbeiter
+36: DSGVO-OK	BOOL	
+37: Benutzername	STRING	
+38: Passwort	STRING	
+39: GUID	STRING	
+40: Lieferbemerkung	STRING	
+47: Formularrolle	STRING	
+49: Anrede persönlich	BOOL	
+50: Wiederanruf	DATETIME	
+51: Betreuer	INT	FOREIGN KEY REFERENCES Mitarbeiter
+52: Homepage	STRING	
+53: Titel nachgestellt	STRING	
+54: Hauptansprechpartner	BOOL	
+55: EMail2	STRING	
+56: Abteilung	STRING	
+57: Zugew. Ansprechp.	INT	FOREIGN KEY REFERENCES Ansprechpartner
+58: Gueltigkeit Ausweis	DATETIME	
+
+Tabelle: Preise Artikel Einkauf (Tabellennummer = 542)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+7: Lief. Art. Nr.	STRING	
+8: Bezeichnung	STRING	
+9: Datum von	DATETIME	
+10: Datum bis	DATETIME	
+11: ab Menge	double	
+12: Preis1	MONEY	
+13: Rabatt1	double	
+14: Rabatt2	double	
+15: Gesamtpreis	MONEY	
+16: Packungsgröße	double	
+17: Lieferzeit Tage	Integer	
+18: Bemerkung	STRING	
+19: Priorität	Integer	
+20: Rabattgruppe	INT	FOREIGN KEY REFERENCES Rabattgruppe
+21: Lagerstand Lieferant	double	
+25: GUID	STRING	
+27: Angebot Lieferant	INT	FOREIGN KEY REFERENCES Angebot Lieferant
+28: Bestellung Lieferant	INT	FOREIGN KEY REFERENCES Bestellung Lieferant
+29: Rechnung Lieferant	INT	FOREIGN KEY REFERENCES Rechnung Lieferant
+30: Bemerkung Intern	STRING	
+31: DB aktualisiert von	BOOL	
+32: DB aktualisiert bis	BOOL	
+33: Lieferung Lieferant	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+
+Tabelle: Einkaufshistorie (Tabellennummer = 574)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Datum	DATETIME	
+6: Beleg	INT	FOREIGN KEY REFERENCES Rechnung Lieferant
+7: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant
+8: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+9: Variante1	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft1
+10: Variante2	INT	FOREIGN KEY REFERENCES Artikel Eigenschaft2
+11: Eigenschaft	double	
+12: Bezeichnung/Text	STRING	
+13: Bearbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+15: Beschreibung 1	STRING	
+16: Menge	double	
+17: Einzelpreis Netto	MONEY	
+18: Nettosumme Gesamt	MONEY	
+19: Umsatzsteuer Gesamt	MONEY	
+20: Bruttosumme Gesamt	MONEY	
+21: Bemerkung (intern)	STRING	
+22: Charge/Seriennummer	STRING	
+23: Gewicht kg (Brutto)	double	
+24: Arbeitsstunden	double	
+25: Gesamt Einstandspreis	MONEY	
+26: Gesamtkosten	MONEY	
+27: DB 1	MONEY	
+28: DB 2	MONEY	
+29: Artikelgruppe	INT	FOREIGN KEY REFERENCES Artikelgruppe
+30: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+
+Tabelle: FIFO Einkaufspreise (Tabellennummer = 603)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Menge	double	
+7: Offene Menge	double	
+8: Einzelpreis	MONEY	
+9: Gesamtpreis	MONEY	
+10: Lieferschein	INT	FOREIGN KEY REFERENCES Lieferung
+11: Lieferposition	INT	FOREIGN KEY REFERENCES Lieferpositionen
+12: Rechnung	INT	FOREIGN KEY REFERENCES Rechnung
+13: Rechnungsposition	INT	FOREIGN KEY REFERENCES Rechnungspositionen
+14: Anlieferung	INT	FOREIGN KEY REFERENCES Lieferung Lieferant
+15: Anlieferungsposition	INT	FOREIGN KEY REFERENCES Lieferpositionen Lieferant
+16: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+17: Lager	INT	FOREIGN KEY REFERENCES Lager
+18: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+19: Datum	DATETIME	
+20: Verbrauchte Menge	double	
+21: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+22: Protokoll	STRING	
+23: Differenzbesteuert	BOOL	
+24: Marge-Preis	BOOL	
+
+Tabelle: FIFO EKPreisbewegungen (Tabellennummer = 605)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Artikel	INT	FOREIGN KEY REFERENCES Artikel
+6: Bewegungsart	INT	FOREIGN KEY REFERENCES Lagerbewegungstyp
+7: Datum	DATETIME	
+8: Menge	double	
+9: Einzelwert	MONEY	
+10: Gesamtwert	MONEY	
+11: Lager	INT	FOREIGN KEY REFERENCES Lager
+12: Bemerkung	STRING	
+13: Tabelle	Integer	
+14: Datensatz	Integer	
+15: Position	Integer	
+16: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+17: Filiale	INT	FOREIGN KEY REFERENCES Filiale
+18: FIFO Preis	INT	FOREIGN KEY REFERENCES FIFO Einkaufspreise
+
+Tabelle: Lieferanten-Zertifikate (Tabellennummer = 663)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Kategorie	Integer	
+6: Gültig bis	DATETIME	
+7: Bemerkung	STRING	
+8: Dokumente	STRING	
+9: Erworben am	DATETIME	
+10: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+11: Letzte Infomail	DATETIME	
+12: Lieferant	INT	FOREIGN KEY REFERENCES Lieferant

@@ -1,0 +1,249 @@
+
+Tabelle: Abwesenheitsart (Tabellennummer = 65)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Bezeichnung	STRING	
+6: Kurzbezeichnung	STRING	
+7: Farbe	Integer	
+
+Tabelle: Mitarbeiter (Tabellennummer = 200)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Name	STRING	
+6: Titel	STRING	
+7: Vorname	STRING	
+8: MA-Nummer	STRING	
+9: SV-Nummer	STRING	
+12: Straße	STRING	
+13: PLZ	STRING	
+14: Ort	STRING	
+15: Land	INT	FOREIGN KEY REFERENCES Land
+16: Telefon Firma	STRING	
+17: Kürzel	STRING	
+18: Fax	STRING	
+19: Telefon Privat 1	STRING	
+20: Telefon Privat 2	STRING	
+21: E-Mail 1	STRING	
+22: Homepage	STRING	
+25: Kategorien	STRING	
+26: Abteilung	INT	FOREIGN KEY REFERENCES Abteilung
+27: AP Freigabe	INT	FOREIGN KEY REFERENCES Mitarbeiter Eigenschaft1
+28: Eigenschaft2	INT	FOREIGN KEY REFERENCES Mitarbeiter Eigenschaft2
+29: Eigenschaft3	INT	FOREIGN KEY REFERENCES Mitarbeiter Eigenschaft3
+30: Tätigkeitsbeschreibung	STRING	
+31: Position	STRING	
+32: Eintrittsdatum	DATETIME	
+33: Austrittsdatum	DATETIME	
+34: Arbeitszeitmodell	INT	FOREIGN KEY REFERENCES Arbeitszeitmodell
+35: Arbeitszeitmodelle	BLOB	
+36: Haupttätigkeit	INT	FOREIGN KEY REFERENCES Tätigkeitstyp
+37: Bemerkung	STRING	
+38: Geburtsname	STRING	
+39: Geb.	DATETIME	
+40: geboren in	STRING	
+41: Geschlecht	INT	FOREIGN KEY REFERENCES Geschlecht
+42: Familienstand	INT	FOREIGN KEY REFERENCES Familienstand
+43: seit	DATETIME	
+44: Kinderanzahl	Integer	
+45: Glaubensbekenntnis	STRING	
+46: Staatsangehörigkeit	INT	FOREIGN KEY REFERENCES Land
+47: Kontonummer	STRING	
+48: BLZ	STRING	
+49: Bank	STRING	
+50: Mandant	INT	FOREIGN KEY REFERENCES Mandant
+52: Bemerkung	STRING	
+54: Urlaubsstand (Tage)	double	
+55: Krankenstand Gesamt	double	
+56: Krankenstand heuer	double	
+57: Schulungsstand Gesamt	double	
+58: Schulungsstand heuer	double	
+59: Zeitausgleichstand (h)	double	
+60: Anwesenheitsstatus	INT	FOREIGN KEY REFERENCES Anwesenheitstatus
+62: letzte Kalkulation	DATETIME	
+63: Bemerkung	STRING	
+64: Führerschein	STRING	
+65: Führerschein seit	DATETIME	
+66: Ausbildung	BLOB	
+67: Tätigkeiten	BLOB	
+68: Sprachkenntnisse	BLOB	
+69: Sonstige Kenntnisse	BLOB	
+70: Fortbildungen	BLOB	
+71: Beschäftigungsart	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+73: Kostenart	INT	FOREIGN KEY REFERENCES Kostenart
+74: Kostenstelle	INT	FOREIGN KEY REFERENCES Kostenstelle KORE
+75: Kostenträger	INT	FOREIGN KEY REFERENCES Kostenträger KORE
+76: KORE Kosten/h	MONEY	
+77: Verrechnungskosten/h	MONEY	
+80: Mit-Provisionisten	BLOB	
+84: Wochenstunden	double	
+85: Urlaubsanspruch Tage	double	
+86: Bruttolohn	MONEY	
+87: Stundensatz Brutto	MONEY	
+88: Lohnnebenkosten %	double	
+89: Stunden-Vollkosten	MONEY	
+90: Beitragsgruppe	STRING	
+92: Kollektivvertrag	INT	FOREIGN KEY REFERENCES Kategorie Allgemein
+93: Frequenz Bericht	Integer	
+104: Ereignisse	BLOB	
+105: Beurteilungen	BLOB	
+106: Ziele	Integer	
+107: Prozeß-Ereignisse	STRING	
+110: Dokumente	STRING	
+111: Ausstattung	BLOB	
+114: Bild	INT	FOREIGN KEY REFERENCES Bild-Tabelle 2
+117: OutlookID	STRING	
+120: Provision	double	
+121: Zeitausgleich Übertrag	double	
+122: Überstunden Pauschalierung	double	
+127: exportiert	BOOL	
+128: Nicht in Zeitplänen anzeigen	BOOL	
+130: GoogleToken	STRING	
+131: GUID	STRING	
+135: Wochenbericht Leitfragen Bericht	STRING	
+136: Wochenbericht Leitfragen Verbessern	STRING	
+137: KORE Aufteilung	BLOB	
+138: E-Mail 2	STRING	
+139: Chip-Nummer	STRING	
+140: Google Kalender	STRING	
+141: Google Hauptkalender	STRING	
+143: GoogleTokenInfo	STRING	
+144: KORE Faktor %	double	
+145: Interne Nachricht Notiz	BOOL	
+146: Interne Nachricht Mail	BOOL	
+147: AP Startfähig Nachricht Intern	STRING	
+148: Geschäftsführung	BOOL	
+149: Bedienbare Ressourcen	STRING	
+153: Kontrolleur	BOOL	
+154: Reduktion Verrechnung Projektzeit	double	
+
+Tabelle: Arbeitszeitmodell (Tabellennummer = 207)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Bezeichnung	STRING	
+8: Arbeitszeiten	BLOB	
+10: Bezahlte Pause/Woche	DATETIME	
+11: Arbeitszeit/Woche	DATETIME	
+13: Arbeitszeit Netto	DATETIME	
+14: Pausenzeit	DATETIME	
+15: Arbeitszeit Brutto	DATETIME	
+16: Arbeitstage pro Woche	Integer	
+17: Bemerkung	STRING	
+18: Optionen	STRING	
+26: Beginn	DATETIME	
+27: Ende	DATETIME	
+28: Aufschlag2 Beginn	DATETIME	
+29: Aufschlag2 Ende	DATETIME	
+30: Aufschlag3 Beginn	DATETIME	
+31: Aufschlag3 Ende	DATETIME	
+32: Toleranz Arbeitsbeginn	DATETIME	
+33: Toleranz Arbeitsende	DATETIME	
+34: Uhrzeit automatische Abmeldung	DATETIME	
+41: Aufschlag Samstag	double	
+42: Aufschlag Sonn-/Feiertag	double	
+43: Zeitaufschlag 1	double	
+44: Zeitaufschlag 2	double	
+45: Zeitaufschlag 3	double	
+46: Überstunden ab x Stunden/Tag	double	
+51: Arbeitszeit frühestens ab Arbeitsbeginn	BOOL	
+52: Arbeitszeit spätestens bis Arbeitsende	BOOL	
+53: Mindestpause immer abziehen	BOOL	
+54: Jede Mehrarbeit gilt als Überstunde	BOOL	
+55: Überstunden ab x Stunden/Woche	double	
+56: Arbeitszeit/Monat	double	
+61: Mindestpause ohne Zeiteinschränkung abziehen	BOOL	
+62: Gestemp. Pausen nicht bei Mindestpause berücks.	BOOL	
+
+Tabelle: Anwesenheitstatus (Tabellennummer = 208)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+4: geändert am	DATETIME	
+3: erzeugt am	DATETIME	
+5: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+6: Anwesend	BOOL	
+7: Statuszeit	DATETIME	
+10: Letztes Ereignis	INT	FOREIGN KEY REFERENCES Zeitereignis
+11: Letzter Ereignistyp	INT	FOREIGN KEY REFERENCES Zeitereignistyp
+
+Tabelle: Zeiterfassung (Tabellennummer = 210)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+4: geändert am	DATETIME	
+3: erzeugt am	DATETIME	
+5: Datum+Zeit	DATETIME	
+6: Ereignis	INT	FOREIGN KEY REFERENCES Zeitereignis
+7: Ereignisart	INT	FOREIGN KEY REFERENCES Zeitereignistyp
+8: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+10: Bemerkung Mitarbeiter	STRING	
+11: gebucht	BOOL	
+17: Zeitausgleich	double	
+23: Manuelle Zeiteingabe	BOOL	
+24: Kontrolle	BOOL	
+25: Kontrolle abgeschlossen	BOOL	
+28: GUID	STRING	
+29: Bemerkung Intern	STRING	
+
+Tabelle: Zeitereignis (Tabellennummer = 211)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+3: creation	DATETIME	
+4: changed_on	DATETIME	
+5: Bezeichnung	STRING	
+6: Kurzbezeichnung	STRING	
+
+Tabelle: Zeitereignistyp (Tabellennummer = 212)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: active	BOOL	
+4: changed_on	DATETIME	
+3: creation	DATETIME	
+5: Bezeichnung	STRING	
+6: Kurzbezeichnung	STRING	
+
+Tabelle: Abwesenheit Mitarbeiter (Tabellennummer = 213)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+6: Abwesenheitsart	INT	FOREIGN KEY REFERENCES Abwesenheitsart
+7: Beginn	DATETIME	
+8: Ende	DATETIME	
+9: Dauer	DATETIME	
+10: Planfarbe	Integer	
+11: Bemerkung	STRING	
+12: gebucht	BOOL	
+23: Prozess	STRING	
+
+Tabelle: Urlaubsantrag (Tabellennummer = 597)
+Spalten:
+1: id	Integer	PRIMARY KEY
+2: aktiv	BOOL	
+3: erzeugt am	DATETIME	
+4: geändert am	DATETIME	
+5: Mitarbeiter	INT	FOREIGN KEY REFERENCES Mitarbeiter
+6: Abwesenheitsart	INT	FOREIGN KEY REFERENCES Abwesenheitsart
+7: Beginn	DATETIME	
+8: Ende	DATETIME	
+9: Dauer	DATETIME	
+10: Farbe	Integer	
+11: Bemerkung	STRING	
+12: gesperrt	BOOL	
+13: Abgelehnt	BOOL	
+14: Bestätigt	BOOL	
+15: Fehlzeit	BOOL	
+16: Fehlzeit Datum+Zeit	DATETIME	
+17: Ereignis	INT	FOREIGN KEY REFERENCES Zeitereignis
+18: Ereignisart	INT	FOREIGN KEY REFERENCES Zeitereignistyp
