@@ -1,3 +1,5 @@
+# Future-C Syntax
+
 - Language syntax is largerly C-Like.
 
 - A unit of code is called "Script". It can be executed as a whole or as a part of a larger script.
