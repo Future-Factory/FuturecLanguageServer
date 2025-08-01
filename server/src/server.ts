@@ -213,6 +213,21 @@ connection.onRequest("custom/GetScriptNumber", (params :any) :{number:number, na
 	return {number:0,name:"NOT DEFINED"};
 });
 
+connection.onRequest("custom/GetScriptContents", (params :any) :{scriptText:string, scriptNumber:number, scriptName:string} => {
+	let doc = documents.get(params.doc);
+	if(doc) {
+		let script = GlobalAnalyzer.getEditedScript(params.pos, doc, false, false);
+		if(script) {
+			return {
+				scriptText: script.m_scripttext,
+				scriptNumber: script.m_scriptnumber,
+				scriptName: script.m_ScriptName
+			};
+		}
+	}
+	return {scriptText:"", scriptNumber:0, scriptName:"NOT DEFINED"};
+});
+
 
 connection.onRequest("custom/getHookStart", (params :any) :any => {
 

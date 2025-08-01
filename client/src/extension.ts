@@ -31,11 +31,16 @@ import {
 	CompletionItemKind
 } from 'vscode-languageclient/node';
 
+import * as mysql from 'mysql2/promise';
+
 
 let client: LanguageClient;
 let x: SignatureHelp | null = null;
 let notYetShown :boolean = true;
 let lastPos: Position | null = null;
+
+// Session-level tracking for database selection
+let sessionDatabaseSelected: boolean = false;
 
 let resimportattributes = workspace.findFiles("Standard/*importattributes*");
 
@@ -317,7 +322,7 @@ ENDSCRIPT
 					pos: window.activeTextEditor.selection.active
 				}).then((value :{number:number,name:string}) => {
 					if(value.number > 0 && value.name != "NOT DEFINED") {
-						window.setStatusBarMessage("Working on script " + value.number + " - " + value.name);
+						window.setStatusBarMessage("Working on script " + value.number + " - " + value.name + " (Press F9 to upload script to database!)");
 					} else {
 						window.setStatusBarMessage("");
 					}
@@ -332,6 +337,328 @@ ENDSCRIPT
 			}).then((value) => {
 				console.log(value);
 			})
+		}));
+
+		// Command to change script upload database
+		context.subscriptions.push(commands.registerCommand("futurec.changeScriptUploadDatabase", async () => {
+			let config = workspace.getConfiguration();
+			let currentUpload = config.get<string>("future_c.ScriptUploadDatabase") || "Production";
+			
+			// Get MySQL connection settings for display
+			let mysqlHost = config.get<string>("future_c.MySQLHost") || "localhost";
+			let mysqlPort = config.get<number>("future_c.MySQLPort") || 3306;
+			let mysqlUsername = config.get<string>("future_c.MySQLUsername") || "root";
+			let mysqlPassword = config.get<string>("future_c.MySQLPassword") || "";
+			
+			// Get hidden databases configuration
+			let hiddenDatabases = config.get<string[]>("future_c.HiddenDatabases") || ["information_schema", "mysql", "performance_schema", "sys"];
+			
+			// Get real database names from MySQL server
+			let databaseOptions = ["Production", "Development", "Testing", "Staging", "Local", "Backup", "Archive"]; // fallback
+			
+			try {
+				const connection = await mysql.createConnection({
+					host: mysqlHost,
+					port: mysqlPort,
+					user: mysqlUsername,
+					password: mysqlPassword,
+					connectTimeout: 5000
+				});
+				
+				// Get list of databases from MySQL server
+				const [rows] = await connection.execute('SHOW DATABASES');
+				let allDatabases = (rows as any[]).map(row => row.Database || row.database || row.Database_name || row.database_name);
+				
+				// Filter out hidden databases
+				databaseOptions = allDatabases.filter(db => !hiddenDatabases.includes(db));
+				await connection.end();
+				
+				console.log("Retrieved databases from MySQL server for script upload change command:", databaseOptions);
+				console.log("Hidden databases (filtered out):", hiddenDatabases);
+			} catch (error) {
+				console.log("Could not fetch databases from MySQL server for script upload change command, using fallback options:", error);
+			}
+			
+			let selectedDatabase = await window.showQuickPick(databaseOptions, {
+				placeHolder: `Current script upload database: ${currentUpload}. Select new script upload database: [MySQL: ${mysqlHost}:${mysqlPort}]`,
+				canPickMany: false
+			});
+			
+			if (selectedDatabase) {
+				await config.update("future_c.ScriptUploadDatabase", selectedDatabase, true);
+				window.showInformationMessage(`Script upload database changed to: ${selectedDatabase} (MySQL: ${mysqlHost}:${mysqlPort})`);
+			}
+		}));
+
+		// Debug mode command - prints current script contents when F9 is pressed
+		context.subscriptions.push(commands.registerCommand("futurec.debugScript", async () => {
+			if(window.activeTextEditor && window.activeTextEditor.document.languageId === "futurec") {
+				// Check MySQL configuration first
+				let config = workspace.getConfiguration();
+				let mysqlHost = config.get<string>("future_c.MySQLHost");
+				let mysqlPort = config.get<number>("future_c.MySQLPort") || 3306;
+				let mysqlUsername = config.get<string>("future_c.MySQLUsername");
+				let mysqlPassword = config.get<string>("future_c.MySQLPassword") || "";
+				
+				// Check if MySQL configuration is present
+				if (!mysqlHost || !mysqlUsername) {
+					console.log("=== DEBUG MODE: MYSQL CONFIGURATION MISSING ===");
+					window.showErrorMessage("Database is not configured for debugging. Please configure MySQL host and username in settings.");
+					return;
+				}
+				
+				// Attempt MySQL connection
+				try {
+					console.log("=== DEBUG MODE: TESTING MYSQL CONNECTION ===");
+					const connection = await mysql.createConnection({
+						host: mysqlHost,
+						port: mysqlPort,
+						user: mysqlUsername,
+						password: mysqlPassword,
+						connectTimeout: 5000 // 5 second timeout
+					});
+					
+					await connection.ping();
+					await connection.end();
+					console.log("MySQL connection successful for debug mode");
+					window.showInformationMessage("Database is connected");
+					
+				} catch (error) {
+					console.log("=== DEBUG MODE: MYSQL CONNECTION FAILED ===");
+					console.log("MySQL connection error:", error);
+					window.showWarningMessage(`Database connection failed. Please check your MySQL settings. Error: ${error.message}`);
+					return;
+				}
+				
+				// Check if we're inside a script
+				client.sendRequest("custom/GetScriptNumber", {
+					doc: window.activeTextEditor.document.uri.toString(),
+					pos: window.activeTextEditor.selection.active
+				}).then(async (value :{number:number,name:string}) => {
+					if(value.number > 0 && value.name != "NOT DEFINED") {
+						console.log("=== DEBUG MODE: SCRIPT DETECTED ===");
+						console.log(`Debugging Script ${value.number} - ${value.name}`);
+						
+						// Check if this is the first debug session for this VS Code instance
+						if (!sessionDatabaseSelected) {
+							console.log("=== FIRST DEBUG SESSION - ASKING FOR DATABASE SELECTION ===");
+							
+							// Get hidden databases configuration
+							let hiddenDatabases = config.get<string[]>("future_c.HiddenDatabases") || ["information_schema", "mysql", "performance_schema", "sys"];
+							
+							// Get real database names from MySQL server for debug mode
+							let databaseOptions: string[] = [];
+							
+							try {
+								const connection = await mysql.createConnection({
+									host: mysqlHost,
+									port: mysqlPort,
+									user: mysqlUsername,
+									password: mysqlPassword,
+									connectTimeout: 5000
+								});
+								
+								// Get list of databases from MySQL server
+								const [rows] = await connection.execute('SHOW DATABASES');
+								let allDatabases = (rows as any[]).map(row => row.Database || row.database || row.Database_name || row.database_name);
+								
+								// Filter out hidden databases
+								databaseOptions = allDatabases.filter(db => !hiddenDatabases.includes(db));
+								await connection.end();
+								
+								console.log("Retrieved databases from MySQL server for first debug session:", databaseOptions);
+								console.log("Hidden databases (filtered out):", hiddenDatabases);
+								
+								// Check if no databases are available
+								if (databaseOptions.length === 0) {
+									console.log("=== DEBUG MODE: NO DATABASES AVAILABLE ===");
+									window.showErrorMessage("No databases available on the MySQL server. Debug mode cannot proceed.");
+									return;
+								}
+							} catch (error) {
+								console.log("Could not fetch databases from MySQL server for first debug session:", error);
+								window.showErrorMessage("Failed to fetch databases from MySQL server. Debug mode cannot proceed.");
+								return;
+							}
+							
+							// Show database selection dialog for first debug session
+							let selectedDatabase = await window.showQuickPick(databaseOptions, {
+								placeHolder: "Select database to upload script to (First debug session)",
+								canPickMany: false
+							});
+							
+							if(selectedDatabase) {
+								// Remember the selected database for this session
+								sessionDatabaseSelected = true;
+								await config.update("future_c.ScriptUploadDatabase", selectedDatabase, true);
+								console.log(`=== FIRST SESSION DATABASE SELECTED: ${selectedDatabase} ===`);
+								console.log(`=== MYSQL CONNECTION INFO ===`);
+								console.log(`Host: ${mysqlHost}:${mysqlPort}`);
+								console.log(`Username: ${mysqlUsername}`);
+								console.log(`Password: ${mysqlPassword ? "***" : "(empty)"}`);
+								
+								// Get and print the complete script contents
+								client.sendRequest("custom/GetScriptContents", {
+									doc: window.activeTextEditor.document.uri.toString(),
+									pos: window.activeTextEditor.selection.active
+								}).then(async (scriptContents :{scriptText:string, scriptNumber:number, scriptName:string}) => {
+									console.log("=== DEBUG SCRIPT CONTENTS ===");
+									console.log(`Script ${scriptContents.scriptNumber} - ${scriptContents.scriptName}:`);
+									console.log(`Target Database: ${selectedDatabase}`);
+									console.log(`MySQL Connection: ${mysqlHost}:${mysqlPort}`);
+									console.log(scriptContents.scriptText);
+									console.log("=== END DEBUG SCRIPT CONTENTS ===");
+									
+									// Attempt to upload script to database
+									try {
+										const connection = await mysql.createConnection({
+											host: mysqlHost,
+											port: mysqlPort,
+											user: mysqlUsername,
+											password: mysqlPassword,
+											database: selectedDatabase,
+											connectTimeout: 5000
+										});
+										
+										// Check if script table exists
+										const [tableRows] = await connection.execute("SHOW TABLES LIKE 'script'");
+										if ((tableRows as any[]).length === 0) {
+											console.log("=== UPLOAD ERROR: SCRIPT TABLE NOT FOUND ===");
+											window.showErrorMessage("Script table not found in database.");
+											await connection.end();
+											return;
+										}
+										
+										// Check if script exists by ID
+										const [scriptRows] = await connection.execute(
+											"SELECT id FROM script WHERE id = ?",
+											[scriptContents.scriptNumber]
+										);
+										
+										if ((scriptRows as any[]).length === 0) {
+											console.log("=== UPLOAD ERROR: SCRIPT ID NOT FOUND ===");
+											console.log(`Script ID ${scriptContents.scriptNumber} not found in database.`);
+											window.showErrorMessage("Script ID not found. Will not upload. Please upload manually via client and then use the update function.");
+											await connection.end();
+											return;
+										}
+										
+										// Update the script's Text_6 column
+										const [updateResult] = await connection.execute(
+											"UPDATE script SET Text_6 = ? WHERE id = ?",
+											[scriptContents.scriptText, scriptContents.scriptNumber]
+										);
+										
+										console.log("=== UPLOAD SUCCESS ===");
+										console.log(`Script ${scriptContents.scriptNumber} - ${scriptContents.scriptName} uploaded successfully to ${selectedDatabase}`);
+										window.showInformationMessage(`Script ${scriptContents.scriptNumber} - ${scriptContents.scriptName} uploaded successfully to ${selectedDatabase}`);
+										
+										await connection.end();
+										
+									} catch (error) {
+										console.log("=== UPLOAD ERROR: DATABASE OPERATION FAILED ===");
+										console.log("Failed to update script:", error);
+										window.showErrorMessage("Failed to update script. Please use client.");
+									}
+									
+									console.log("=== DEBUG MODE COMPLETE ===");
+								}).catch((error) => {
+									console.log("DEBUG ERROR: Could not get script contents:", error);
+								});
+							}
+						} else {
+							// Use the previously selected database for this session
+							let scriptUploadDatabase = config.get<string>("future_c.ScriptUploadDatabase");
+							console.log(`=== USING SESSION DATABASE: ${scriptUploadDatabase} ===`);
+							console.log(`=== MYSQL CONNECTION INFO ===`);
+							console.log(`Host: ${mysqlHost}:${mysqlPort}`);
+							console.log(`Username: ${mysqlUsername}`);
+							console.log(`Password: ${mysqlPassword ? "***" : "(empty)"}`);
+							
+							// Get and print the complete script contents
+							client.sendRequest("custom/GetScriptContents", {
+								doc: window.activeTextEditor.document.uri.toString(),
+								pos: window.activeTextEditor.selection.active
+							}).then(async (scriptContents :{scriptText:string, scriptNumber:number, scriptName:string}) => {
+								console.log("=== DEBUG SCRIPT CONTENTS ===");
+								console.log(`Script ${scriptContents.scriptNumber} - ${scriptContents.scriptName}:`);
+								console.log(`Target Database: ${scriptUploadDatabase}`);
+								console.log(`MySQL Connection: ${mysqlHost}:${mysqlPort}`);
+								console.log(scriptContents.scriptText);
+								console.log("=== END DEBUG SCRIPT CONTENTS ===");
+								
+								// Attempt to upload script to database
+								try {
+									const connection = await mysql.createConnection({
+										host: mysqlHost,
+										port: mysqlPort,
+										user: mysqlUsername,
+										password: mysqlPassword,
+										database: scriptUploadDatabase,
+										connectTimeout: 5000
+									});
+									
+									// Check if script table exists
+									const [tableRows] = await connection.execute("SHOW TABLES LIKE 'script'");
+									if ((tableRows as any[]).length === 0) {
+										console.log("=== UPLOAD ERROR: SCRIPT TABLE NOT FOUND ===");
+										window.showErrorMessage("Script table not found in database.");
+										await connection.end();
+										return;
+									}
+									
+									// Check if script exists by ID
+									const [scriptRows] = await connection.execute(
+										"SELECT id FROM script WHERE id = ?",
+										[scriptContents.scriptNumber]
+									);
+									
+									if ((scriptRows as any[]).length === 0) {
+										console.log("=== UPLOAD ERROR: SCRIPT ID NOT FOUND ===");
+										console.log(`Script ID ${scriptContents.scriptNumber} not found in database.`);
+										window.showErrorMessage("Script ID not found. Will not upload. Please upload manually via client and then use the update function.");
+										await connection.end();
+										return;
+									}
+									
+									// Update the script's Text_6 column
+									const [updateResult] = await connection.execute(
+										"UPDATE script SET Text_6 = ? WHERE id = ?",
+										[scriptContents.scriptText, scriptContents.scriptNumber]
+									);
+									
+									console.log("=== UPLOAD SUCCESS ===");
+									console.log(`Script ${scriptContents.scriptNumber} - ${scriptContents.scriptName} uploaded successfully to ${scriptUploadDatabase}`);
+									window.showInformationMessage(`Script ${scriptContents.scriptNumber} - ${scriptContents.scriptName} uploaded successfully to ${scriptUploadDatabase}`);
+									
+									await connection.end();
+									
+								} catch (error) {
+									console.log("=== UPLOAD ERROR: DATABASE OPERATION FAILED ===");
+									console.log("Failed to update script:", error);
+									window.showErrorMessage("Failed to update script. Please use client.");
+								}
+								
+								console.log("=== DEBUG MODE COMPLETE ===");
+							}).catch((error) => {
+								console.log("DEBUG ERROR: Could not get script contents:", error);
+							});
+
+						}
+					} else {
+						console.log("=== DEBUG MODE: NO SCRIPT DETECTED ===");
+						console.log("You are not currently inside a Future C script.");
+						console.log("Please position your cursor inside a script to debug.");
+						console.log("=== DEBUG MODE COMPLETE ===");
+					}
+				}).catch((error) => {
+					console.log("DEBUG ERROR: Could not detect script:", error);
+				});
+			} else {
+				console.log("=== DEBUG MODE: INVALID DOCUMENT ===");
+				console.log("Please open a Future C document to use debug mode.");
+				console.log("=== DEBUG MODE COMPLETE ===");
+			}
 		}));
 	
 	

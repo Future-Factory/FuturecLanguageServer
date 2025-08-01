@@ -32,6 +32,16 @@
                     "when": "editorFocus && editorLangId == futurec",
                     "command": "Collect.Statistics.For.Current.Script",
                     "group": "navigation"
+                },
+                {
+                    "when": "editorFocus && editorLangId == futurec",
+                    "command": "futurec.debugScript",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorFocus && editorLangId == futurec",
+                    "command": "futurec.changeScriptUploadDatabase",
+                    "group": "navigation"
                 }
             ],
             "editor/title": [
@@ -43,6 +53,16 @@
                 {
                     "when": "editorFocus && editorLangId == futurec",
                     "command": "Collect.Statistics.For.Current.Script",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorFocus && editorLangId == futurec",
+                    "command": "futurec.debugScript",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorFocus && editorLangId == futurec",
+                    "command": "futurec.changeScriptUploadDatabase",
                     "group": "navigation"
                 }
             ]
@@ -100,6 +120,45 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Wenn aktiviert wird im Editor die Signatur oder Snippet als Parameter angezeigt."
+                },
+                "future_c.ScriptUploadDatabase": {
+                    "scope": "application",
+                    "type": "string",
+                    "default": "Production",
+                    "description": "Die Datenbank, die für das Uploaden von Skripten verwendet wird"
+                },
+                "future_c.MySQLHost": {
+                    "scope": "workspace",
+                    "type": "string",
+                    "default": "localhost",
+                    "description": "MySQL server host address"
+                },
+                "future_c.MySQLPort": {
+                    "scope": "workspace",
+                    "type": "number",
+                    "default": 3306,
+                    "description": "MySQL server port number"
+                },
+                "future_c.MySQLUsername": {
+                    "scope": "workspace",
+                    "type": "string",
+                    "default": "root",
+                    "description": "MySQL username for database connection"
+                },
+                "future_c.MySQLPassword": {
+                    "scope": "workspace",
+                    "type": "string",
+                    "default": "",
+                    "description": "MySQL password for database connection"
+                },
+                "future_c.HiddenDatabases": {
+                    "scope": "workspace",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": ["information_schema", "mysql", "performance_schema", "sys"],
+                    "description": "List of database names that should be hidden from the upload database selection"
                 }
             }
         },
@@ -180,6 +239,11 @@
                 "command": "create.script",
                 "when": "editorTextFocus",
                 "key": "Ctrl+numpad1"
+            },
+            {
+                "command": "futurec.debugScript",
+                "when": "editorTextFocus && editorLangId == futurec",
+                "key": "F9"
             }
         ],
         "commands": [
@@ -207,6 +271,31 @@
                 "command": "create.script",
                 "title": "Skript erstellen",
                 "enablement": "editorFocus && editorLangId == futurec"
+            },
+            {
+                "command": "futurec.debugScript",
+                "title": "Debug Current Script",
+                "category": "Future C",
+                "enablement": "editorFocus && editorLangId == futurec"
+            },
+
+            {
+                "command": "futurec.changeScriptUploadDatabase",
+                "title": "Change Script Upload Database",
+                "category": "Future C",
+                "enablement": "editorFocus && editorLangId == futurec"
+            },
+            {
+                "command": "futurec.changeScriptUploadDatabase",
+                "title": "Future C: Change Script Upload Database",
+                "category": "Future C",
+                "enablement": "true"
+            },
+            {
+                "command": "futurec.debugScript",
+                "title": "Future C: Debug Current Script",
+                "category": "Future C",
+                "enablement": "true"
             }
         ]
     },
@@ -230,6 +319,7 @@
     "dependencies": {
         "lru-cache": "^6.0.0",
         "minimatch": "^3.0.4",
+        "mysql2": "^3.6.0",
         "vscode": "1.1.37",
         "vscode-languageclient": "9.0.1"
     }
