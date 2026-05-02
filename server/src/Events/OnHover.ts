@@ -6,6 +6,57 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 
+function getLineText(doc :TextDocument, line :number) :string {
+	return doc.getText({
+		start: { line, character: 0 },
+		end: { line, character: 10000 }
+	});
+}
+
+function getSnippetAroundLine(doc :TextDocument, centerLine :number, before :number, after :number) :string {
+	const startLine = Math.max(0, centerLine - before);
+	const endLine = Math.min(doc.lineCount - 1, centerLine + after);
+	return doc.getText({
+		start: { line: startLine, character: 0 },
+		end: { line: endLine, character: 10000 }
+	}).trim();
+}
+
+function findHookSnippetInMainScript(
+	_docs :Map<string, TextDocument>,
+	mainScriptNumber :number,
+	hookWithSlashes :string
+) :string {
+	let snippet = "";
+
+	_docs.forEach((value:TextDocument) => {
+		if(snippet.length > 0) { return; }
+
+		const text = value.getText();
+		const scriptHeader = new RegExp("^\\s*SCRIPT:" + mainScriptNumber.toString() + "\\b.*$", "gm");
+		const headerMatch = scriptHeader.exec(text);
+		if(!headerMatch) { return; }
+
+		// Determine end of SCRIPT block so we don't match in later scripts.
+		const headerIndex = headerMatch.index;
+		const endRegex = /^\\s*ENDSCRIPT.*$/gm;
+		endRegex.lastIndex = headerIndex;
+		const endMatch = endRegex.exec(text);
+		const blockEnd = endMatch ? endMatch.index : text.length;
+
+		const hookIndex = text.indexOf(hookWithSlashes, headerIndex);
+		if(hookIndex >= 0 && hookIndex < blockEnd) {
+			const hookPos = value.positionAt(hookIndex);
+			snippet = getSnippetAroundLine(value, hookPos.line, 5, 5);
+		} else {
+			// Fallback: at least show the script header context.
+			const headerPos = value.positionAt(headerIndex);
+			snippet = getSnippetAroundLine(value, headerPos.line, 0, 10);
+		}
+	});
+
+	return snippet;
+}
 
 export function OnHover(docs :Map<string, TextDocument>, curDoc :TextDocument, pos :Position) :Hover {
 	
@@ -22,6 +73,42 @@ export function OnHover(docs :Map<string, TextDocument>, curDoc :TextDocument, p
 		if(word.isScript() && functionname) {
 			functionname.trim();
 			hoverString = "";
+
+			// If hovering a hook inside an INSERTINTOSCRIPT line, show the hook context from the main script
+			// (5 lines before/after around the //ADDHOOK marker).
+			if(word.m_type == CursorPositionType.ADDHOOK) {
+				const lineText = getLineText(curDoc, pos.line);
+				const insertMatch = /\bINSERTINTOSCRIPT:(\d+),/g.exec(lineText);
+				if(insertMatch) {
+					const mainNr = Number.parseInt(insertMatch[1]);
+					const hookWithSlashes = "//" + functionname;
+					const snippet = findHookSnippetInMainScript(docs, mainNr, hookWithSlashes);
+					if(snippet.length > 0) {
+						hoverString = [
+							'```futurec',
+							snippet,
+							'```'
+						].join("\n");
+					}
+				}
+			}
+
+			// If we already produced a hoverString for the INSERTINTOSCRIPT hook case,
+			// skip the old "lines before" behavior.
+			if(hoverString.length > 0) {
+				let startChar = word.m_OffsetOnLine;
+				if(startChar <= 0) {startChar = 0;}
+				return {
+					contents: {
+						kind: "markdown",
+						value: hoverString
+					},
+					range: {
+						start: {character: startChar, line: pos.line },
+						end: {character: word.m_OffsetOnLine + word.m_word.length, line: pos.line }
+					}
+				};
+			}
 			
 			let numberOfReferences = 0;
 			docs.forEach((value:TextDocument, key:string) => {

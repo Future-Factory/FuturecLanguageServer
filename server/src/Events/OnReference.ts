@@ -5,6 +5,51 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 
+function findHookDefinitionInMainScript(
+	_docs :Map<string, TextDocument>,
+	mainScriptNumber :number,
+	hookWithSlashes :string
+) :Location[] {
+	let loc :Location[] = [];
+
+	_docs.forEach((value:TextDocument) => {
+		if(loc.length > 0) { return; }
+
+		const text = value.getText();
+		const scriptHeader = new RegExp("^\\s*SCRIPT:" + mainScriptNumber.toString() + "\\b.*$", "gm");
+		const headerMatch = scriptHeader.exec(text);
+		if(!headerMatch) { return; }
+
+		// Limit search to the script block to avoid wrong matches.
+		const headerIndex = headerMatch.index;
+		const endRegex = /^\\s*ENDSCRIPT.*$/gm;
+		endRegex.lastIndex = headerIndex;
+		const endMatch = endRegex.exec(text);
+		const blockEnd = endMatch ? endMatch.index : text.length;
+
+		const hookIndex = text.indexOf(hookWithSlashes, headerIndex);
+		if(hookIndex >= 0 && hookIndex < blockEnd) {
+			const startPos = value.positionAt(hookIndex);
+			const endPos = value.positionAt(hookIndex + hookWithSlashes.length);
+			loc.push({
+				uri: value.uri,
+				range: { start: startPos, end: endPos }
+			});
+			return;
+		}
+
+		// Fallback: jump to the SCRIPT header if hook marker not found.
+		const headerPos = value.positionAt(headerIndex);
+		const start = { line: headerPos.line, character: headerPos.character + 7 };
+		const end = { line: headerPos.line, character: headerPos.character + 7 + mainScriptNumber.toString().length };
+		loc.push({
+			uri: value.uri,
+			range: { start, end }
+		});
+	});
+
+	return loc;
+}
 
 export function OnReference(docs :Map<string, TextDocument>, curDoc :TextDocument, pos :Position) : Location[] {
 	
@@ -14,6 +59,22 @@ export function OnReference(docs :Map<string, TextDocument>, curDoc :TextDocumen
 		if(word.m_type != CursorPositionType.INCLUDESCRIPT) {
 			let functionname = word.getFunctionname();
 			if(functionname) {
+				// Special case: from customer INSERTINTOSCRIPT hook -> jump to main script //ADDHOOK marker.
+				if(word.m_type == CursorPositionType.ADDHOOK) {
+					const lineText = curDoc.getText({
+						start: { line: pos.line, character: 0 },
+						end: { line: pos.line, character: 10000 }
+					});
+					const insertMatch = /\bINSERTINTOSCRIPT:(\d+),/g.exec(lineText);
+					if(insertMatch) {
+						const mainNr = Number.parseInt(insertMatch[1]);
+						const hookWithSlashes = "//" + functionname;
+						const defLoc = findHookDefinitionInMainScript(docs, mainNr, hookWithSlashes);
+						if(defLoc.length > 0) {
+							return defLoc;
+						}
+					}
+				}
 				loc = findReferencesScriptOrFunction(docs, functionname);
 			}
 		}

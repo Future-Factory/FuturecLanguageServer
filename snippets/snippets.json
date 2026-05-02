@@ -15,7 +15,7 @@
     "New Changecomment": {
         "prefix": "Create Changecomment",
         "body": [
-            "CHANGE:\t$CURRENT_DATE.$CURRENT_MONTH.$CURRENT_YEAR\t${1:Name}\t$LINE_COMMENT AP-ID:${2:ID}",
+            "CHANGE:\t$CURRENT_DATE.$CURRENT_MONTH.$CURRENT_YEAR\t${1:Name}\t${LINE_COMMENT}AP-ID:${2:ID}",
             "\t\t${3:Comment}",
             "\t\t$0"
         ],

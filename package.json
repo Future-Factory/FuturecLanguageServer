@@ -1,10 +1,9 @@
 {
     "name": "future-c",
     "description": "Future C - experimental Languageserver",
-    "author": "Marcel Sotiropoulos <marcel.sotiropoulos@soti-it.at>",
     "license": "MIT",
-    "version": "1.3.0",
-    "publisher": "MarcelSotiropoulos",
+    "version": "1.3.1",
+    "publisher": "local",
     "categories": [],
     "keywords": [
         "multi-root ready"
@@ -17,7 +16,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/Muraxon/FuturecLanguageServer.git"
+        "url": "https://github.com/Future-Factory/FuturecLanguageServer"
     },
     "main": "./client/out/extension",
     "contributes": {
@@ -224,13 +223,13 @@
         "@typescript-eslint/parser": "^4.21.0",
         "eslint": "^7.23.0",
         "mocha": "^8.3.2",
+        "vscode": "1.1.37",
         "typescript": "^4.2.3"
     },
     "icon": "logo.png",
     "dependencies": {
         "lru-cache": "^6.0.0",
         "minimatch": "^3.0.4",
-        "vscode": "1.1.37",
         "vscode-languageclient": "9.0.1"
     }
 }

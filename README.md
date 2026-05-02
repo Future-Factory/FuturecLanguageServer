@@ -1,11 +1,9 @@
 # Future-C Language-Server:
 
 Erste Version eines Language-Server für unsere Skriptsprache. Der Sinn dahinter ist, dass das Arbeiten in den Skripts im Laufe der Zeit extrem erleichtert wird.
-- Bitte durchlesen und etwaige [Wünsche / Anregungen](https://github.com/Muraxon/FuturecLanguageServer/issues) gleich erstellen
-- Bei Fehlern bitte gleich ein [Issue](https://github.com/Muraxon/FuturecLanguageServer/issues) erstellen
 - Die Extension wird nur bei Dateien mit **.cpp**-Dateien aktiviert
   ___
-- [Repository](https://github.com/Muraxon/FuturecLanguageServer)
+- [Repository](https://github.com/Future-Factory/FuturecLanguageServer)
   ___
 ## Features (laufend aktualisiert)
 - [x] Syntaxhighlighting
@@ -36,10 +34,10 @@ Erste Version eines Language-Server für unsere Skriptsprache. Der Sinn dahinter
 - [x] Variablen
   - [x] **Hovering** Zeigt alle Usages im aktuellen Skript an - inklusive includescripts
   ___
-- [ ] Hooks
+- [x] Hooks
   - [x] Zu Kundenhook springen
-  - [ ] Von Kundenhook zu Hook in Hauptskript springen
-  - [ ] Hook für Kunden erstellen
+  - [x] Von Kundenhook zu Hook in Hauptskript springen
+  - [x] Hook für Kunden erstellen (CTRL+Numpad3)
   ___
 - [ ] Datenbank
   - [ ] Spaltennamen anzeigen (bei Where-Strings / Funktionen die mit DB interagieren)

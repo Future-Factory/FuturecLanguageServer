@@ -233,10 +233,8 @@ export async function activate(context: ExtensionContext) {
 
 	if(snippetForScript.length <= 0) {
 		snippetTextForScript = `
-///////////////////////////////////////////////////////////////////////////////
-
-	CHANGE:	$CURRENT_DATE.$CURRENT_MONTH.$CURRENT_YEAR	\${6:Name}	$LINE_COMMENT AP-ID:\${7:ID}
-	\${8:Erstellt \${9:asdasd}}
+CHANGE:	$CURRENT_DATE.$CURRENT_MONTH.$CURRENT_YEAR	\${6:Name}	\${LINE_COMMENT}AP-ID:\${7:ID}
+		\${8:Erstellt \${9:asdasd}}
 
 ///////////////////////////////////////////////////////////////////////////////
 SCRIPT:scriptNumber,scriptName,0,0,0,\${3:Verzeichnis},\${4:Scripticon},\${5:Admintyp}
@@ -251,7 +249,7 @@ SCRIPT:scriptNumber,scriptName,0,0,0,\${3:Verzeichnis},\${4:Scripticon},\${5:Adm
 	S.UnlockActualRecord();
 
 ENDSCRIPT
-///////////////////////////////////////////////////////////////////////////////`;
+///////////////////////////////////////////////////////////////////////////////\r\n`;
 		
 	} else {
 		snippetTextForScript = readFileSync(snippetForScript[0].fsPath).toString();
@@ -260,10 +258,8 @@ ENDSCRIPT
 
 	if(snippetForHook.length <= 0) {
 		snippetTextForHook = `
-//////////////////////////////////////////////////////////////////////////////
-
-	CHANGE:	$CURRENT_DATE.$CURRENT_MONTH.$CURRENT_YEAR	\${4:Name}	$LINE_COMMENT AP-ID:\${5:ID}
-	\${6:Erstellt \${7:asdasd}}
+CHANGE:	$CURRENT_DATE.$CURRENT_MONTH.$CURRENT_YEAR	\${4:Name}	\${LINE_COMMENT}AP-ID:\${5:ID}
+		\${6:Erstellt \${7:asdasd}}
 
 //////////////////////////////////////////////////////////////////////////////
 INSERTINTOSCRIPT:scriptNumber,hookname
@@ -271,7 +267,7 @@ INSERTINTOSCRIPT:scriptNumber,hookname
 	$0
 
 ENDSCRIPT
-//////////////////////////////////////////////////////////////////////////////`;
+//////////////////////////////////////////////////////////////////////////////\r\n`;
 		
 	} else {
 		snippetTextForHook = readFileSync(snippetForHook[0].fsPath).toString();

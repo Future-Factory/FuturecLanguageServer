@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 28.04.2026
+- added functionality for "Von Kundenhook zu Hook in Hauptskript springen" (README.md)
+- unified change comments in snippets 
 
 ## [1.3.0] - 23.10.2021
 - new option inside scriptautocompletedefs.json for marking parameters as optional with an '?'. All parameters are by default required
