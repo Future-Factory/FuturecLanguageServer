@@ -45,6 +45,8 @@ import { OnDiagnostic } from './Events/OnDiagnostic';
 import { TextParser } from './TextParser';
 import { OnDiagnosticForAllScripts } from './Events/OnDiagnosticAllFiles';
 import { OnCollectStatistics } from './Commands/OnCollectStatistics';
+import { mergeDiagnosticsForScript } from './diagnosticsMerge';
+import type { CurrentScriptDiagnosticResult } from './Events/OnDiagnostic';
 
 export let parserFunctions :ParserFunctions = new ParserFunctions();
 
@@ -65,6 +67,9 @@ let GlobalManager :DocumentManager = new DocumentManager();
 
 // Cache the settings of all open documents
 export let documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
+
+/** Letzte gesendeten Diagnosen pro URI (partielles Update nur des aktuellen Skripts bei Live-Check). */
+const lastDiagnosticsByUri = new Map<string, Diagnostic[]>();
 
 export let CurrentCompletionCharacter :string|undefined = undefined;
 let currentWorkingScript = null;
@@ -183,6 +188,7 @@ export function getDocumentSettings(resource: string): Thenable<ExampleSettings>
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
+	lastDiagnosticsByUri.delete(e.document.uri);
 	GlobalManager.add(e.document);
 
 });
@@ -194,7 +200,7 @@ documents.onDidOpen(e => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((change :TextDocumentChangeEvent<TextDocument>) => {
-	validateTextDocument(change.document);
+	void validateTextDocument(change.document);
 });
 
 connection.onRequest("custom/GetScriptNumber", (params :any) :{number:number, name:string} => {
@@ -264,11 +270,12 @@ connection.onRequest("custom/getHookStart", (params :any) :any => {
 	};
 });
 
-connection.onRequest("custom/GetDiagnosticsForAllScripts", async (obj) => {
+connection.onRequest("custom/GetDiagnosticsForAllScripts", (obj) => {
 
 	let doc = documents.get(obj.uri);
 	if(doc) {
 		let diag = <Diagnostic[]>GlobalManager.doWithDocuments(documents, doc, obj.pos, OnDiagnosticForAllScripts);
+		lastDiagnosticsByUri.set(obj.uri, diag);
 		connection.sendDiagnostics({
 			diagnostics: diag,
 			uri: obj.uri
@@ -329,10 +336,18 @@ connection.onNotification("custom/sendCursorPos", (obj) => {
 	let docc = documents.get(doc);
 	if(docc) {
 		try {
-			let sig = <Diagnostic[]>GlobalManager.doWithDocuments(documents, docc, obj.pos, OnDiagnostic);
+			let result = <CurrentScriptDiagnosticResult>GlobalManager.doWithDocuments(documents, docc, obj.pos, OnDiagnostic);
 
-			//Send the computed diagnostics to VSCode.
-			connection.sendDiagnostics({ uri: docc.uri, diagnostics: sig });
+			let merged :Diagnostic[];
+			if (result.scriptNumber !== undefined) {
+				const prev = lastDiagnosticsByUri.get(docc.uri) ?? [];
+				merged = mergeDiagnosticsForScript(prev, result.diagnostics, result.scriptNumber, result.scriptBodyLineRange);
+			} else {
+				merged = result.diagnostics;
+			}
+			lastDiagnosticsByUri.set(docc.uri, merged);
+
+			connection.sendDiagnostics({ uri: docc.uri, diagnostics: merged });
 		} catch (error) {
 			console.log(error);
 		}
@@ -360,11 +375,12 @@ connection.onNotification("custom/mainscript", (value :{scriptnumber :string}) =
 })
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-	// In this simple example we get the settings for every validate run.
 	let settings = await getDocumentSettings(textDocument.uri);
+
 	if(settings && settings.ShowDiagnosisOfCurrentScript) {
 		connection.sendNotification("custom/getCursorPos");
 	} else {
+		lastDiagnosticsByUri.delete(textDocument.uri);
 		connection.sendDiagnostics({uri: textDocument.uri, diagnostics: []})
 	}
 }
@@ -568,13 +584,6 @@ connection.onDidOpenTextDocument((params) => {
 	// params.textDocument.uri uniquely identifies the document. For documents store on disk this is a file URI.
 	// params.textDocument.text the initial full content of the document.
 	connection.console.log(`${params.textDocument.uri} opened.`);
-});
-
-connection.onDidChangeTextDocument((params) => {
-	// The content of a text document did change in VSCode.
-	// params.textDocument.uri uniquely identifies the document.
-	// params.contentChanges describe the content changes to the document.
-	connection.console.log(`${params.textDocument.uri} changed: ${JSON.stringify(params.contentChanges)}`);
 });
 
 connection.onDidCloseTextDocument((params) => {

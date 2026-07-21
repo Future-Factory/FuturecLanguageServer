@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 21.07.2026
+- live diagnostics now merge per script instead of replacing all problems in the file
+  - each diagnostic is tagged with its script number (`future-c · Skript N`)
+  - stale entries from other scripts inside the current SCRIPT…ENDSCRIPT block are removed on merge
+- improved function-argument checking
+  - empty parameter slots (e.g. `func()`, `func(a,)`, `func(,a)`) are detected correctly
+  - expressions like `-1` or `(nDir-0.01)` are counted as real arguments
+- clearer JSON validation errors for `§START_JSON§` blocks (position context / content preview)
+  - JSON without outer `{`/`[` is wrapped automatically before parsing
+- `unittestbuildup` / `unittestend` no longer require a return when the return type is not `void`
+
 ## [1.3.1] - 28.04.2026
 - added functionality for "Von Kundenhook zu Hook in Hauptskript springen" (README.md)
 - unified change comments in snippets 

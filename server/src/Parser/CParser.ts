@@ -5,6 +5,7 @@ import {
 import { CursorPositionInformation, CursorPositionType } from '../CursorPositionInformation';
 import { Script } from '../Script';
 import { GlobalAnalyzer, parserFunctions } from '../server';
+import { FUTUREC_DIAGNOSTIC_SOURCE_PREFIX } from '../diagnosticsMerge';
 import { Node } from './AST';
 
 
@@ -54,6 +55,8 @@ interface ScriptInformation {
 export class CParser {
 	m_Statistics :StatisticsForParser;
 	m_GenerateStatistics :boolean;
+	/** Zeilenlabel in Problems + Merge nach Skript; wird pro `processTokens` gesetzt. */
+	m_diagnosticScriptSource :string = 'future-c';
 	collectStatistics(tokens :Token[], index :number, currentToken :Token, functionToken :Token, parameterToken :Token|null = null, isInParameterlist :boolean = false) {
 		if(this.m_GenerateStatistics) {
 			if(!isInParameterlist) {
@@ -275,11 +278,33 @@ export class CParser {
 				}
 			},
 			severity: serverity,
-			source: "futurec",
-			data: "hallo",
+			source: this.m_diagnosticScriptSource,
 			code: code,
 			tags: tagsGiven
 		})
+	}
+
+	formatJsonValidationError(jsonToParse :string, error :unknown) :string {
+		const message = error instanceof Error ? error.message : String(error);
+		const parts = [`Invalid JSON in §START_JSON§ block: ${message}`];
+
+		const positionMatch = message.match(/position\s+(\d+)/i);
+		if (positionMatch) {
+			const position = Number.parseInt(positionMatch[1], 10);
+			if (Number.isFinite(position) && position >= 0 && position <= jsonToParse.length) {
+				const contextStart = Math.max(0, position - 30);
+				const contextEnd = Math.min(jsonToParse.length, position + 30);
+				let context = jsonToParse.slice(contextStart, contextEnd);
+				if (contextStart > 0) { context = "…" + context; }
+				if (contextEnd < jsonToParse.length) { context = context + "…"; }
+				parts.push(`Near position ${position}: ${context}`);
+			}
+		} else if (jsonToParse.length > 0) {
+			const preview = jsonToParse.length > 100 ? jsonToParse.slice(0, 100) + "…" : jsonToParse;
+			parts.push(`Content: ${preview}`);
+		}
+
+		return parts.join("\n");
 	}
 
 	IsType(text :string) {
@@ -327,6 +352,11 @@ export class CParser {
 		return false;
 	}
 
+	/** True when a parameter slot starts with real content (not empty before ), ,, or ;). */
+	hasParameterContent(text :string) {
+		return text != ")" && text != "," && text != ";";
+	}
+
 	parseParameterlist(
 		currentToken :Token,
 		tokens :Token[],
@@ -343,7 +373,11 @@ export class CParser {
 
 		let paranthScope = 1;
 		let newToken = this.getToken(tokens, index + 1);
-		let param = newToken.m_Text == ")" ? 0 : 1;
+		// Only count a slot when something is present (not empty like func() / func(,a) / func(a,)).
+		let param = this.hasParameterContent(newToken.m_Text) ? 1 : 0;
+		if(newToken.m_Text == ",") {
+			this.addError("Missing parameter for function '"+funcToken.m_Text+"'.", diag, doc, scriptPos, newToken, isIncludescript);
+		}
 		index++;
 		let missingParameters = "";
 
@@ -373,10 +407,15 @@ export class CParser {
 						}
 						this.addError(errorText + " this script gets included somewhere. But resolving this is not yet supported.", diag, doc, scriptPos, variableToken, isIncludescript, severity);
 					}
-					param++;
 				} else if(this.isLiteral(variableToken.m_Text)) {
 					index++;
+				}
+				// Count every non-empty top-level argument, including unary minus / parenthesized
+				// expressions (e.g. -1, (nDir-0.01)). Skip empty slots like "func(a,)".
+				if(this.hasParameterContent(variableToken.m_Text)) {
 					param++;
+				} else {
+					this.addError("Missing parameter for function '"+funcToken.m_Text+"'.", diag, doc, scriptPos, token, isIncludescript);
 				}
 			} else if(param == 1 && token.m_Text != ",") {
 				firstParameterText += token.m_Text;
@@ -408,8 +447,9 @@ export class CParser {
 			j--;
 		}
 
-			
-		if(missingParameters.length > 0) {
+		const ignoreArgumentCheck = false; 
+		
+		if(missingParameters.length > 0 && !ignoreArgumentCheck) {
 			let errorMessage = "Too few arguments for function '"+funcToken.m_Text+"'. Parameters " + missingParameters + " are required to run this function";
 			if(missingParameters.search(",") < 0) {
 				errorMessage = "Too few arguments for function '"+funcToken.m_Text+"'. Parameter " + missingParameters + " is required to run this function";
@@ -417,7 +457,7 @@ export class CParser {
 			this.addError(errorMessage, diag, doc, scriptPos, funcToken, isIncludescript);
 		}
 
-		if(func.parameters && param > func.parameters.length) {
+		if(func.parameters && param > func.parameters.length && !ignoreArgumentCheck) {
 			this.addError("Too many arguments for function '"+funcToken.m_Text+"'. Maximum of "+func.parameters.length+" arguments expected and "+param+" given.", diag, doc, scriptPos, funcToken, isIncludescript);
 		}
 
@@ -505,6 +545,8 @@ export class CParser {
 
 		let diag :Diagnostic[] = [];
 
+		this.m_diagnosticScriptSource = FUTUREC_DIAGNOSTIC_SOURCE_PREFIX + script.m_scriptnumber;
+
 		let found = script.m_scripttext.search(/#includescript\s+[0-9]+\b/);
 		let hasIncludescript = found >= 0;
 
@@ -537,7 +579,9 @@ export class CParser {
 
 		if(script.m_MainScript) {
 			let num = this.m_ErrorCount;
+			const savedDiagSource = this.m_diagnosticScriptSource;
 			scopeLevel = this.ParseText(_NotManagedDocs, script.m_MainScript, true, definedVariables, definedFunctions, 0).m_ScopeLevel;
+			this.m_diagnosticScriptSource = savedDiagSource;
 			num -= this.m_ErrorCount;
 			if(num != 0) {
 				this.addError("Mainscript " + script.m_MainScript.m_scriptnumber + " has some errors in it. Diagnostics after this point cannot be fully trusted", diag, doc, scriptPos, {m_Range: {end: 0, start: 0}, m_Text: ""}, isIncludescript, DiagnosticSeverity.Information);
@@ -549,6 +593,8 @@ export class CParser {
 
 		let functionReturnType = "";
 		let functionReturnTypeProcessed = false;
+		/** Name of the innermost SCRIPT FUNCTION being parsed (for special-case rules). */
+		let currentUserDefinedFunctionName = "";
 		try {
 
 			for(let i = 0; i < tokens.length; i++) {
@@ -564,12 +610,18 @@ export class CParser {
 						this.addError("After ENDFUNCTION must follow an ';'", diag, doc, scriptPos, currentToken, isIncludescript);
 					}
 					
-					if(!functionReturnTypeProcessed && functionReturnType != "void") {
+					// do not check for return type in unittestbuildup and unittestend
+					const omitMandatoryFuncReturn =
+						(currentUserDefinedFunctionName.toLowerCase() === "unittestbuildup" ||
+							currentUserDefinedFunctionName.toLowerCase() === "unittestend");
+
+					if(!functionReturnTypeProcessed && functionReturnType != "void" && !omitMandatoryFuncReturn) {
 						this.addError("Returntype != 'void', returntype must be of type '"+functionReturnType+"'", diag, doc, scriptPos, currentToken, isIncludescript);
 					}
 
 					functionReturnTypeProcessed = false;
 					functionReturnType = "";
+					currentUserDefinedFunctionName = "";
 					if(scopeLevel - 1 >= 0) {
 						definedVariables.pop();
 						definedFunctions.pop();
@@ -593,6 +645,7 @@ export class CParser {
 						} else {
 							let functionText = this.getToken(tokens, i + 3).m_Text;
 							functionReturnType = thirdToken.m_Text;
+							currentUserDefinedFunctionName = functionText;
 
 							let index :number = this.isFunctionDefined(functionText, definedFunctions, scopeLevel);
 							if(index >= 0) {
@@ -923,12 +976,17 @@ export class CParser {
 							while(json.indexOf("bSOUNGTESTUNGb") >= 0) {
 								json = json.replace("bSOUNGTESTUNGb", "$§\"");
 							}
+							let jsonToParse = json.trim();
+
 							try {
 								if(isJson){
-									JSON.parse(json);
+									if (!jsonToParse.startsWith("{") && !jsonToParse.startsWith("[")) {
+										jsonToParse = "{" + jsonToParse + "}";
+									}
+									JSON.parse(jsonToParse);
 								}
 							} catch (error :any) { 
-								this.addError(error.message, diag, doc, scriptPos, secondToken,isIncludescript);
+								this.addError(this.formatJsonValidationError(jsonToParse, error), diag, doc, scriptPos, secondToken,isIncludescript);
 							}
 						}
 					}
@@ -1112,7 +1170,9 @@ export class CParser {
 							for (let x = 0; x < script.m_IncludeScript.length; x++) {
 								if(parseInt(number[1]) == script.m_IncludeScript[x].m_scriptnumber) {
 									let num = this.m_ErrorCount;
+									const savedDiagSource = this.m_diagnosticScriptSource;
 									scopeLevel = this.ParseText(_NotManagedDocs, script.m_IncludeScript[x], true, definedVariables, definedFunctions, scopeLevel).m_ScopeLevel;
+									this.m_diagnosticScriptSource = savedDiagSource;
 									num = num - this.m_ErrorCount;
 									if(num != 0) {
 										this.addError("includescript " + number[1] + " has some errors in it. Diagnostics after this point cannot be fully trusted", diag, doc, scriptPos, secondToken, isIncludescript, DiagnosticSeverity.Information);
@@ -1146,7 +1206,9 @@ export class CParser {
 					this.addError("Hook detected, maybe a customer uses this hook", diag, doc, scriptPos, thirdToken, isIncludescript, DiagnosticSeverity.Warning, 500);
 					for(let x = 0; x < script.m_HooksForDocument.length; x++) {
 						if(script.m_HooksForDocument[x].m_ScriptName == thirdToken.m_Text) {
+							const savedDiagSource = this.m_diagnosticScriptSource;
 							scopeLevel = this.ParseText(_NotManagedDocs, script.m_HooksForDocument[x], isIncludescript, definedVariables, definedFunctions, scopeLevel).m_ScopeLevel;
+							this.m_diagnosticScriptSource = savedDiagSource;
 							break;
 						}
 					}
