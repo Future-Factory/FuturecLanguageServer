@@ -142,9 +142,11 @@ export class TextParser {
 	static getScriptStart(doc :TextDocument, pos :Position, text :string|null = null) :[Position, boolean] {
 
 		if(!text) {
+			// Aktuelle Zeile mitnehmen: Cursor auf Zeichen 0 von SCRIPT: sonst findet
+			// lastIndexOf nur den Header des vorherigen Skripts.
 			text = doc.getText({
 				start: {character: 0, line: 0},
-				end: pos
+				end: {character: 100000, line: pos.line}
 			});
 		}
 
@@ -188,7 +190,8 @@ export class TextParser {
 	static getScriptEnd(doc :TextDocument, pos :Position) :Position {
 		const [startPos] = this.getScriptStart(doc, pos);
 
-		for(let line = startPos.line; line < doc.lineCount; line++) {
+		// Ab der Zeile *nach* dem Header suchen (Header selbst ist nie ENDSCRIPT).
+		for(let line = startPos.line + 1; line < doc.lineCount; line++) {
 			const lineText = doc.getText({
 				start: { line, character: 0 },
 				end: { line, character: 10000 }

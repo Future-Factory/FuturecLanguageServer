@@ -44,7 +44,7 @@ import { OnCompletion } from './Events/OnCompletion';
 import { OnDiagnostic } from './Events/OnDiagnostic';
 import { TextParser } from './TextParser';
 import { OnDiagnosticForAllScripts } from './Events/OnDiagnosticAllFiles';
-import { OnCollectStatistics } from './Commands/OnCollectStatistics';
+import { OnCollectStatistics, OnCollectStatisticsForAllScripts, formatStatisticsSummary } from './Commands/OnCollectStatistics';
 import { mergeDiagnosticsForScript } from './diagnosticsMerge';
 import type { CurrentScriptDiagnosticResult } from './Events/OnDiagnostic';
 
@@ -289,10 +289,15 @@ connection.onRequest("custom/CollectStatisticsForCurrentScript", (obj) => {
 	let doc :string = obj.doc;
 	let docc = documents.get(doc);
 	if(docc) {
-		let stats :StatisticsForParser = GlobalManager.doWithDocuments(documents, docc, obj.pos, OnCollectStatistics);
+		let stats = GlobalManager.doWithDocuments(documents, docc, obj.pos, OnCollectStatistics) as {
+			byVariable :StatisticsForParser;
+			byType :Map<string, Map<string, number>>;
+		};
+
+		let summary = formatStatisticsSummary(stats.byType);
 
 		let completeStats :any[] = [];
-		stats.forEach((val, key) => {
+		stats.byVariable.forEach((val, key) => {
 			let test :any[] = [];
 			val.forEach((val2, key2) => {
 				test.push({
@@ -306,7 +311,23 @@ connection.onRequest("custom/CollectStatisticsForCurrentScript", (obj) => {
 				[key] : test
 			})
 		})
-		return completeStats;
+		return {
+			summary: summary,
+			details: completeStats
+		};
+	}
+	return null;
+});
+
+connection.onRequest("custom/CollectStatisticsForAllScripts", (obj) => {
+
+	let doc :string = obj.doc;
+	let docc = documents.get(doc);
+	if(docc) {
+		let byType = GlobalManager.doWithDocuments(documents, docc, obj.pos, OnCollectStatisticsForAllScripts) as Map<string, Map<string, number>>;
+		return {
+			summary: formatStatisticsSummary(byType)
+		};
 	}
 	return null;
 });

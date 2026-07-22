@@ -329,21 +329,62 @@ ENDSCRIPT
 			if(!window.activeTextEditor) {
 				return;
 			}
-			client.sendRequest("custom/CollectStatisticsForCurrentScript", {
-				doc: window.activeTextEditor.document.uri.toString(),
-				pos: window.activeTextEditor.selection.active
-			}).then((value) => {
-				statsOutput.clear();
-				statsOutput.appendLine("Future C – Statistiken für aktuelles Skript");
-				statsOutput.appendLine(new Date().toLocaleString());
-				statsOutput.appendLine("");
-				if(value == null) {
-					statsOutput.appendLine("(keine Daten)");
-				} else {
-					statsOutput.appendLine(JSON.stringify(value, null, 2));
+			const doc = window.activeTextEditor.document.uri.toString();
+			const pos = window.activeTextEditor.selection.active;
+			const [script, value] = await Promise.all([
+				client.sendRequest("custom/GetScriptNumber", { doc, pos }) as Thenable<{number:number,name:string}>,
+				client.sendRequest("custom/CollectStatisticsForCurrentScript", { doc, pos })
+			]);
+			statsOutput.clear();
+			statsOutput.appendLine("Future C – Statistiken für aktuelles Skript");
+			if(script && script.number > 0 && script.name !== "NOT DEFINED") {
+				statsOutput.appendLine(`Skript ${script.number} – ${script.name}`);
+			}
+			statsOutput.appendLine(new Date().toLocaleString());
+			statsOutput.appendLine("");
+			if(value == null) {
+				statsOutput.appendLine("(keine Daten)");
+			} else {
+				const stats = value as { summary?: string[]; details?: unknown };
+				if(stats.summary && stats.summary.length > 0) {
+					statsOutput.appendLine("Gesamtstatistik");
+					for(const line of stats.summary) {
+						statsOutput.appendLine(line);
+					}
+					statsOutput.appendLine("");
 				}
-				statsOutput.show(true);
-			});
+				statsOutput.appendLine("Details");
+				statsOutput.appendLine(JSON.stringify(stats.details ?? value, null, 2));
+			}
+			statsOutput.show(false);
+		}));
+
+		context.subscriptions.push(commands.registerCommand("Collect.Statistics.For.All.Scripts", async () => {
+			if(!window.activeTextEditor) {
+				return;
+			}
+			const doc = window.activeTextEditor.document.uri.toString();
+			const pos = window.activeTextEditor.selection.active;
+			const value = await window.withProgress(
+				{ location: ProgressLocation.Notification, cancellable: false },
+				(progress) => {
+					progress.report({ message: "Statistiken für alle Skripte werden gesammelt…" });
+					return client.sendRequest("custom/CollectStatisticsForAllScripts", { doc, pos }) as Thenable<{ summary?: string[] } | null>;
+				}
+			);
+			statsOutput.clear();
+			statsOutput.appendLine("Future C – Gesamtstatistik für alle Skripte");
+			statsOutput.appendLine(new Date().toLocaleString());
+			statsOutput.appendLine("");
+			if(value == null || !value.summary || value.summary.length === 0) {
+				statsOutput.appendLine("(keine Daten)");
+			} else {
+				for(const line of value.summary) {
+					statsOutput.appendLine(line);
+				}
+			}
+			statsOutput.show(false);
+			await commands.executeCommand("cursorTop");
 		}));
 	
 	

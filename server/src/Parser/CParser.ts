@@ -54,11 +54,13 @@ interface ScriptInformation {
 
 export class CParser {
 	m_Statistics :StatisticsForParser;
+	/** Typ/Kontext → Funktion → Anzahl (für Gesamtstatistik). */
+	m_StatisticsByType :Map<string, Map<string, number>>;
 	m_GenerateStatistics :boolean;
 	/** Zeilenlabel in Problems + Merge nach Skript; wird pro `processTokens` gesetzt. */
 	m_diagnosticScriptSource :string = 'future-c';
-	collectStatistics(tokens :Token[], index :number, currentToken :Token, functionToken :Token, parameterToken :Token|null = null, isInParameterlist :boolean = false) {
-		if(this.m_GenerateStatistics) {
+	collectStatistics(tokens :Token[], index :number, currentToken :Token, functionToken :Token, parameterToken :Token|null = null, isInParameterlist :boolean = false, typeContext :string|null = null, isIncludescript :boolean = false) {
+		if(this.m_GenerateStatistics && !isIncludescript) {
 			if(!isInParameterlist) {
 
 				let tok = this.m_Statistics.get(currentToken.m_Text);
@@ -75,6 +77,14 @@ export class CParser {
 					map.set(functionToken.m_Text, {times_used: 1, from_tables: []});
 					this.m_Statistics.set(currentToken.m_Text, map);
 				}
+
+				const typeKey = typeContext ?? currentToken.m_Text;
+				let typeFuncs = this.m_StatisticsByType.get(typeKey);
+				if(!typeFuncs) {
+					typeFuncs = new Map();
+					this.m_StatisticsByType.set(typeKey, typeFuncs);
+				}
+				typeFuncs.set(functionToken.m_Text, (typeFuncs.get(functionToken.m_Text) ?? 0) + 1);
 			} else {
 				let tok = this.m_Statistics.get(currentToken.m_Text);
 				if(tok) {
@@ -106,6 +116,7 @@ export class CParser {
 	constructor(generateStatistics :boolean = false) {
 		this.m_ErrorCount = 0;
 		this.m_Statistics = new Map();
+		this.m_StatisticsByType = new Map();
 		this.m_GenerateStatistics = generateStatistics;
 	}
 	isVariableDefined(variable :string, definedVariables_ :Map<string, Variable>[], scope :number) :Variable|undefined {
@@ -344,6 +355,32 @@ export class CParser {
 		}
 		return true;
 	}
+
+	/** Hungarian-Notation / Namenskonvention wie bei Scope-Variablen. */
+	inferTypeFromVariableName(name :string) :string | null {
+		if(name.substring(0, 3) == "str" || name.substring(0, 4) == "mstr") {
+			return "CString";
+		}
+		if(name.substring(0, 2) == "dt") {
+			return "CDateTime";
+		}
+		if(name.substring(0, 1) == "b") {
+			return "BOOL";
+		}
+		if(name.substring(0, 1) == "t" || name.substring(0, 3) == "m_t") {
+			return "CTable";
+		}
+		if(name.substring(0, 1) == "m") {
+			return "CMoney";
+		}
+		if(name.substring(0, 1) == "d") {
+			return "double";
+		}
+		if(name.substring(0, 1) == "n") {
+			return "int";
+		}
+		return null;
+	}
 	
 	isLiteral(text :string) {
 		if(text.charAt(0).match(/[0-9]/) || text.charAt(0) == "\"") {
@@ -425,7 +462,7 @@ export class CParser {
 
 		if(firstParameterText.length > 0) {
 			let firstParameterToken = new Token(firstParameterText, {end:1, start: 1});
-			this.collectStatistics(tokens, index, currentToken, funcToken, firstParameterToken, true);
+			this.collectStatistics(tokens, index, currentToken, funcToken, firstParameterToken, true, null, isIncludescript);
 		}
 
 		let token = this.getToken(tokens, index);
@@ -791,7 +828,7 @@ export class CParser {
 										this.addError("Function '"+thirdToken.m_Text+"' is not a parserfunction from the global namespace '"+currentTokenText+"'", diag, doc, scriptPos, thirdToken, isIncludescript);
 									} else {
 
-										this.collectStatistics(tokens, i, currentToken, thirdToken);
+										this.collectStatistics(tokens, i, currentToken, thirdToken, null, false, null, isIncludescript);
 
 										let parameterListError = this.parseParameterlist(currentToken, tokens, i, definedVariables, func, thirdToken, scopeLevel, isIncludescript, hasIncludescript, diag, doc, scriptPos);
 										i = parameterListError.new_index;
@@ -1203,7 +1240,7 @@ export class CParser {
 				else if(currentTokenText == "__ADDHOOK__") {
 					let secondToken = this.getToken(tokens, i + 1);
 					let thirdToken = this.getToken(tokens, i + 2);
-					this.addError("Hook detected, maybe a customer uses this hook", diag, doc, scriptPos, thirdToken, isIncludescript, DiagnosticSeverity.Warning, 500);
+					//this.addError("Hook detected, maybe a customer uses this hook", diag, doc, scriptPos, thirdToken, isIncludescript, DiagnosticSeverity.Warning, 500);
 					for(let x = 0; x < script.m_HooksForDocument.length; x++) {
 						if(script.m_HooksForDocument[x].m_ScriptName == thirdToken.m_Text) {
 							const savedDiagSource = this.m_diagnosticScriptSource;
@@ -1247,24 +1284,41 @@ export class CParser {
 								this.addError("after . must follow an Parserfunction", diag, doc, scriptPos, thirdToken, isIncludescript);
 							} else {
 								let func :SignatureInformation|undefined = undefined;
+								let typeContext :string|null = null;
+
 								if(variable && parserFunctions) {
-									func = parserFunctions.getSignature(new CursorPositionInformation(thirdToken.m_Text, "", CursorPositionType.VARIABLE, variable.m_Type, 0))
+									typeContext = variable.m_Type;
+									func = parserFunctions.getSignature(new CursorPositionInformation(thirdToken.m_Text, "", CursorPositionType.VARIABLE, variable.m_Type, 0));
 									if(!func) {
 										this.addError("Function '"+thirdToken.m_Text+"' is not a parserfunction from instance '"+variable.m_Name+"' of type '"+variable.m_Type+"'", diag, doc, scriptPos, thirdToken, isIncludescript);
+									}
+								} else if(!variable && this.m_GenerateStatistics && !isIncludescript && parserFunctions) {
+									// Fallback: Variable unbekannt (z. B. aus Includescript) — Typ nur dann per Name schätzen
+									typeContext = this.inferTypeFromVariableName(currentTokenText);
+									if(typeContext) {
+										func = parserFunctions.getSignature(new CursorPositionInformation(thirdToken.m_Text, "", CursorPositionType.VARIABLE, typeContext, 0));
 									}
 								}
 
 								if(func) {
-									
 									let fourthToken = this.getToken(tokens,i + 3);
 									if(fourthToken.m_Text != "(") {
 										i += 3;
 										this.addError("after Parserfunction must follow an Paranthesis", diag, doc, scriptPos, fourthToken, isIncludescript);
 									} else {
-										this.collectStatistics(tokens, i, currentToken, thirdToken);
+										this.collectStatistics(tokens, i, currentToken, thirdToken, null, false, typeContext, isIncludescript);
 
 										let parameterListError = this.parseParameterlist(currentToken, tokens, i + 3, definedVariables, func, thirdToken, scopeLevel, isIncludescript, hasIncludescript, diag, doc, scriptPos);
 										i = parameterListError.new_index;
+									}
+								} else if(!variable && this.m_GenerateStatistics && !isIncludescript) {
+									// Letzter Fallback: Aufruf ohne gefundene Signatur trotzdem zählen
+									let fourthToken = this.getToken(tokens,i + 3);
+									if(fourthToken.m_Text == "(") {
+										if(!typeContext) {
+											typeContext = this.inferTypeFromVariableName(currentTokenText);
+										}
+										this.collectStatistics(tokens, i, currentToken, thirdToken, null, false, typeContext, isIncludescript);
 									}
 								}
 							}

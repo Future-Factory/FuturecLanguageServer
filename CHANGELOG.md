@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 23.07.2026
+- improved script statistics output
+  - shows script number and name for the current script
+  - adds a type-based summary (`CTable.GetElementDOUBLE - Count: N`, …) before the detailed JSON
+  - summary is sorted by call count (descending)
+  - includescript / main-script bodies are no longer counted in statistics (avoids inflated totals)
+- added `Collect.Statistics.For.All.Scripts`
+  - aggregates summary over all `SCRIPT` / `INSERTINTOSCRIPT` blocks in the current file
+  - output is summary-only (no per-variable details)
+
 ## [1.3.3] - 22.07.2026
 - hover on `INSERTINTOSCRIPT` hooks now shows the main script header (`SCRIPT:…`) above the hook context
   - header is shown separately from the ±5-line code snippet around `//ADDHOOK`
