@@ -24,8 +24,8 @@
       ],
       "folding": {
         "markers": {
-          "start": "^\\s*//\\s*#?region\\b",
-          "end": "^\\s*//\\s*#?endregion\\b"
+          "start": "^\\s*(?://\\s*#?region\\b|ADDTOSCRIPT:|INSERTINTOSCRIPT:|SCRIPT:)",
+          "end": "^\\s*(?://\\s*#?endregion\\b|ENDSCRIPT)\\b"
         }
       },
       "indentationRules": {

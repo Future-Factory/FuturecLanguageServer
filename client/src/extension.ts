@@ -20,7 +20,8 @@ import { workspace,
 	TextEditorEdit,
 	ProgressLocation,
 	Selection,
-	Uri
+	Uri,
+	OutputChannel
 } from 'vscode';
 
 import {
@@ -52,6 +53,9 @@ export async function activate(context: ExtensionContext) {
 	let serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')
 	);
+
+	const statsOutput :OutputChannel = window.createOutputChannel("Future C Statistics");
+	context.subscriptions.push(statsOutput);
 		
 	// The debug options for the server
 	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
@@ -322,12 +326,24 @@ ENDSCRIPT
 		});
 	
 		context.subscriptions.push(commands.registerCommand("Collect.Statistics.For.Current.Script", async () => {
+			if(!window.activeTextEditor) {
+				return;
+			}
 			client.sendRequest("custom/CollectStatisticsForCurrentScript", {
 				doc: window.activeTextEditor.document.uri.toString(),
 				pos: window.activeTextEditor.selection.active
 			}).then((value) => {
-				console.log(value);
-			})
+				statsOutput.clear();
+				statsOutput.appendLine("Future C – Statistiken für aktuelles Skript");
+				statsOutput.appendLine(new Date().toLocaleString());
+				statsOutput.appendLine("");
+				if(value == null) {
+					statsOutput.appendLine("(keine Daten)");
+				} else {
+					statsOutput.appendLine(JSON.stringify(value, null, 2));
+				}
+				statsOutput.show(true);
+			});
 		}));
 	
 	
@@ -489,9 +505,22 @@ ENDSCRIPT
 				try {
 					let position = new Position(pos.line, pos.character);
 					let range = new Range(position, position);
-					
+					window.activeTextEditor.selection = new Selection(position, position);
 					window.activeTextEditor.revealRange(range, TextEditorRevealType.InCenter);
-					//commands.executeCommand("editor.action.insertSnippet", {langId: 'futurec', name: 'log'})
+				} catch (error) {
+					
+				}
+			});
+		}));
+
+		context.subscriptions.push(commands.registerCommand("jump.to.end.of.script", () => {
+			let param = client.code2ProtocolConverter.asTextDocumentPositionParams(window.activeTextEditor.document, new Position(window.activeTextEditor.selection.start.line,window.activeTextEditor.selection.start.character))
+			client.sendRequest("custom/jump.to.end.of.script", param).then((pos :Position) => {
+				try {
+					let position = new Position(pos.line, pos.character);
+					let range = new Range(position, position);
+					window.activeTextEditor.selection = new Selection(position, position);
+					window.activeTextEditor.revealRange(range, TextEditorRevealType.InCenter);
 				} catch (error) {
 					
 				}

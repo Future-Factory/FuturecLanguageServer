@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 22.07.2026
+- hover on `INSERTINTOSCRIPT` hooks now shows the main script header (`SCRIPT:…`) above the hook context
+  - header is shown separately from the ±5-line code snippet around `//ADDHOOK`
+- navigation shortcuts
+  - added `Ctrl+J E` to jump to the `ENDSCRIPT` line of the current script
+- `Collect.Statistics.For.Current.Script` writes results to the Output channel „Future C Statistics“ instead of `console.log`
+- folding markers now also fold on `SCRIPT:` / `INSERTINTOSCRIPT:` / `ADDTOSCRIPT:`
+
 ## [1.3.2] - 21.07.2026
 - live diagnostics now merge per script instead of replacing all problems in the file
   - each diagnostic is tagged with its script number (`future-c · Skript N`)

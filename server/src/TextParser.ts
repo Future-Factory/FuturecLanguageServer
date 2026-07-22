@@ -152,13 +152,52 @@ export class TextParser {
 		let m2 = text.lastIndexOf("\nINSERTINTOSCRIPT:");
 		let m3 = text.lastIndexOf("\nADDTOSCRIPT:");
 
+		// lastIndexOf trifft das \n vor dem Header — +1 → Start der SCRIPT:-Zeile
+		let matchIndex = -1;
+		let isInsert = false;
 		if(m1 > m2 && m1 > m3) {
-			return [doc.positionAt(m1), false];
+			matchIndex = m1;
+			isInsert = false;
 		} else if(m2 > m3) {
-			return [doc.positionAt(m2), true];
+			matchIndex = m2;
+			isInsert = true;
 		} else {
-			return [doc.positionAt(m3), false];
+			matchIndex = m3;
+			isInsert = false;
 		}
+
+		if(matchIndex < 0) {
+			// Dateianfang ohne führendes \n
+			if(/^SCRIPT:/.test(text)) {
+				return [{ line: 0, character: 0 }, false];
+			}
+			if(/^INSERTINTOSCRIPT:/.test(text)) {
+				return [{ line: 0, character: 0 }, true];
+			}
+			if(/^ADDTOSCRIPT:/.test(text)) {
+				return [{ line: 0, character: 0 }, false];
+			}
+			return [pos, false];
+		}
+
+		const headerPos = doc.positionAt(matchIndex + 1);
+		return [{ line: headerPos.line, character: 0 }, isInsert];
+	}
+
+	/** Position der ENDSCRIPT-Zeile des Skripts, in dem der Cursor steht (Suche nach unten). */
+	static getScriptEnd(doc :TextDocument, pos :Position) :Position {
+		const [startPos] = this.getScriptStart(doc, pos);
+
+		for(let line = startPos.line; line < doc.lineCount; line++) {
+			const lineText = doc.getText({
+				start: { line, character: 0 },
+				end: { line, character: 10000 }
+			});
+			if(/^\s*ENDSCRIPT\b/.test(lineText)) {
+				return { line, character: 0 };
+			}
+		}
+		return pos;
 	}
 
 

@@ -13,49 +13,81 @@ function getLineText(doc :TextDocument, line :number) :string {
 	});
 }
 
-function getSnippetAroundLine(doc :TextDocument, centerLine :number, before :number, after :number) :string {
-	const startLine = Math.max(0, centerLine - before);
-	const endLine = Math.min(doc.lineCount - 1, centerLine + after);
-	return doc.getText({
-		start: { line: startLine, character: 0 },
-		end: { line: endLine, character: 10000 }
-	}).trim();
+function buildHookSnippetFromScriptText(scriptText :string, hookWithSlashes :string) :{ header :string, body :string } {
+	const empty = { header: "", body: "" };
+	const lines = scriptText.split(/\r?\n/);
+	if(lines.length === 0) { return empty; }
+
+	// Bei CRLF kann ^\s*SCRIPT: ein führendes \n matchen → leere erste Split-Zeile.
+	let scriptLineIdx = lines.findIndex(line => /^\s*SCRIPT:\d+/.test(line));
+	if(scriptLineIdx < 0) {
+		scriptLineIdx = lines.findIndex(line => line.trim().length > 0);
+	}
+	if(scriptLineIdx < 0) { return empty; }
+
+	const header = lines[scriptLineIdx].replace(/\r$/, "").trimEnd();
+	const hookLineIdx = lines.findIndex(line => line.indexOf(hookWithSlashes) >= 0);
+
+	if(hookLineIdx < 0) {
+		const body = lines.slice(scriptLineIdx + 1, scriptLineIdx + 11)
+			.map(line => line.replace(/\r$/, ""))
+			.join("\n")
+			.trimEnd();
+		return { header, body };
+	}
+
+	const start = Math.max(scriptLineIdx + 1, hookLineIdx - 5);
+	const end = Math.min(lines.length - 1, hookLineIdx + 5);
+	const body = lines.slice(start, end + 1)
+		.map(line => line.replace(/\r$/, ""))
+		.filter(line => line.trim() !== header.trim())
+		.join("\n")
+		.trimEnd();
+
+	return { header, body };
+}
+
+function formatHookHover(header :string, body :string) :string {
+	if(header.length <= 0 && body.length <= 0) { return ""; }
+	// SCRIPT:-Zeile als eigenen Markdown-Text vor dem Kontext,
+	// nicht in derselben Code-Fence wie der Hook — sonst fehlt sie im UI.
+	const parts :string[] = [];
+	if(header.length > 0) {
+		parts.push("`" + header.replace(/`/g, "") + "`");
+	}
+	if(body.length > 0) {
+		parts.push("```futurec\n" + body + "\n```");
+	}
+	return parts.join("\n\n");
 }
 
 function findHookSnippetInMainScript(
 	_docs :Map<string, TextDocument>,
 	mainScriptNumber :number,
 	hookWithSlashes :string
-) :string {
-	let snippet = "";
+) :{ header :string, body :string } {
+	let result = { header: "", body: "" };
 
 	_docs.forEach((value:TextDocument) => {
-		if(snippet.length > 0) { return; }
+		if(result.header.length > 0 || result.body.length > 0) { return; }
 
 		const text = value.getText();
-		const scriptHeader = new RegExp("^\\s*SCRIPT:" + mainScriptNumber.toString() + "\\b.*$", "gm");
+		// Nur Spaces/Tabs vor SCRIPT: — kein \r/\n in \s, sonst CRLF-Fehlmatch.
+		const scriptHeader = new RegExp("^[^\\S\\r\\n]*SCRIPT:" + mainScriptNumber.toString() + "\\b.*$", "gm");
 		const headerMatch = scriptHeader.exec(text);
 		if(!headerMatch) { return; }
 
-		// Determine end of SCRIPT block so we don't match in later scripts.
 		const headerIndex = headerMatch.index;
-		const endRegex = /^\\s*ENDSCRIPT.*$/gm;
+		const endRegex = /^[^\S\r\n]*ENDSCRIPT.*$/gm;
 		endRegex.lastIndex = headerIndex;
 		const endMatch = endRegex.exec(text);
 		const blockEnd = endMatch ? endMatch.index : text.length;
 
-		const hookIndex = text.indexOf(hookWithSlashes, headerIndex);
-		if(hookIndex >= 0 && hookIndex < blockEnd) {
-			const hookPos = value.positionAt(hookIndex);
-			snippet = getSnippetAroundLine(value, hookPos.line, 5, 5);
-		} else {
-			// Fallback: at least show the script header context.
-			const headerPos = value.positionAt(headerIndex);
-			snippet = getSnippetAroundLine(value, headerPos.line, 0, 10);
-		}
+		const scriptBlock = text.substring(headerIndex, blockEnd);
+		result = buildHookSnippetFromScriptText(scriptBlock, hookWithSlashes);
 	});
 
-	return snippet;
+	return result;
 }
 
 export function OnHover(docs :Map<string, TextDocument>, curDoc :TextDocument, pos :Position) :Hover {
@@ -82,14 +114,16 @@ export function OnHover(docs :Map<string, TextDocument>, curDoc :TextDocument, p
 				if(insertMatch) {
 					const mainNr = Number.parseInt(insertMatch[1]);
 					const hookWithSlashes = "//" + functionname;
-					const snippet = findHookSnippetInMainScript(docs, mainNr, hookWithSlashes);
-					if(snippet.length > 0) {
-						hoverString = [
-							'```futurec',
-							snippet,
-							'```'
-						].join("\n");
+					let parts = { header: "", body: "" };
+					// m_MainScript can be truncated at the hook name (extractToText) — only use it if the marker is present.
+					const mainText = script && script.m_MainScript ? script.m_MainScript.m_scripttext : "";
+					if(mainText && mainText.indexOf(hookWithSlashes) >= 0) {
+						parts = buildHookSnippetFromScriptText(mainText, hookWithSlashes);
 					}
+					if(parts.header.length <= 0 && parts.body.length <= 0) {
+						parts = findHookSnippetInMainScript(docs, mainNr, hookWithSlashes);
+					}
+					hoverString = formatHookHover(parts.header, parts.body);
 				}
 			}
 

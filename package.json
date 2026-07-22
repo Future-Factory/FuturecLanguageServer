@@ -2,7 +2,7 @@
     "name": "future-c",
     "description": "Future C - experimental Languageserver",
     "license": "MIT",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "publisher": "local",
     "categories": [],
     "keywords": [
@@ -171,6 +171,11 @@
                 "when": "editorTextFocus"
             },
             {
+                "command": "jump.to.end.of.script",
+                "key": "Ctrl+j e",
+                "when": "editorTextFocus"
+            },
+            {
                 "command": "create.hook",
                 "key": "Ctrl+numpad3",
                 "when": "editorTextFocus"
@@ -195,6 +200,11 @@
             {
                 "command": "jump.to.start.of.script",
                 "title": "Jump to start of script",
+                "enablement": "editorFocus && editorLangId == futurec"
+            },
+            {
+                "command": "jump.to.end.of.script",
+                "title": "Jump to end of script",
                 "enablement": "editorFocus && editorLangId == futurec"
             },
             {

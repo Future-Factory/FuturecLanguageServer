@@ -369,6 +369,14 @@ connection.onRequest("custom/jump.to.start.of.script", (param :TextDocumentPosit
 	return param.position;
 });
 
+connection.onRequest("custom/jump.to.end.of.script", (param :TextDocumentPositionParams) :Position => {
+	let doc = documents.get(param.textDocument.uri);
+	if(doc) {
+		return TextParser.getScriptEnd(doc, param.position);
+	}
+	return param.position;
+});
+
 connection.onNotification("custom/mainscript", (value :{scriptnumber :string}) => {
 	
 
